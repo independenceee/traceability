@@ -20,7 +20,7 @@ const Header = function () {
                 href={routes.landing.redirect}
             >
                 <Image className="h-[35px] w-[35px] object-cover" src={images.logo} alt="Logo" />
-                <span className="text-2xl">Generator</span>
+                <span className="text-2xl">Traceability</span>
             </Link>
 
             {/* logo-end */}

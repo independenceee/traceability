@@ -1,3 +1,5 @@
+import logo from "./logo.png";
+
 export default {
-    logo: "",
+    logo: logo,
 } as const;
