@@ -1,7 +1,9 @@
 import { appNetwork } from "../../../constants";
 import { parseHttpError } from "../../../utils";
-import { Network } from "@meshsdk/core";
-import axios, { AxiosInstance } from "axios";
+import type { Network } from "@meshsdk/core";
+import axios  from "axios";
+import type { AxiosInstance } from "axios";
+
 
 export class KoiosFetcher {
   private readonly _axiosInstance: AxiosInstance;

@@ -1,4 +1,5 @@
-import { Network } from "@meshsdk/core";
+import type { Network } from "@meshsdk/core";
+
 const BLOCKFROST_API_KEY = process.env.BLOCKFROST_API_KEY || "";
 const KOIOS_TOKEN = process.env.KOIOS_TOKEN || "";
 

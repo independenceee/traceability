@@ -1,7 +1,10 @@
-import axios, { AxiosInstance } from "axios";
-import { Asset, BlockfrostSupportedNetworks, resolveRewardAddress } from "@meshsdk/core";
+import axios from "axios";
+import type { Asset } from "@meshsdk/core";
+import { resolveRewardAddress } from "@meshsdk/core";
 import { parseHttpError } from "../../../utils";
-import { Transaction, UtXO } from "../../../types";
+import type { Transaction, UtXO } from "../../../types";
+import type { AxiosInstance } from "axios";
+import type {BlockfrostSupportedNetworks} from "@meshsdk/core";
 
 export class BlockfrostFetcher {
   private readonly _axiosInstance: AxiosInstance;
