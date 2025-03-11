@@ -28,17 +28,7 @@ describe("Mint, Burn, Update, Remove Assets (NFT/TOKEN) CIP68", function () {
     });
     const unsignedTx: string = await cip68Contract.mint([
       {
-        assetName: "CIP68 Generators 111111",
-        metadata: {
-          name: "CIP68 Generators",
-          _pk: deserializeAddress( wallet.getChangeAddress()).pubKeyHash,
-        },
-        quantity: "1",
-        receiver: null!,
-      },
-
-      {
-        assetName: "CIP68" ,
+        assetName: "CIP68 Generators",
         metadata: {
           name: "CIP68 Generators",
           _pk: deserializeAddress( wallet.getChangeAddress()).pubKeyHash,
