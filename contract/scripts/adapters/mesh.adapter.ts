@@ -1,17 +1,16 @@
 import {
   applyParamsToScript,
   deserializeAddress,
-  IFetcher,
   MeshTxBuilder,
   MeshWallet,
-  PlutusScript,
   resolveScriptHash,
   scriptAddress,
   serializeAddressObj,
   serializePlutusScript,
-  UTxO,
+
 } from "@meshsdk/core";
-import { Plutus } from "../types";
+import type {UTxO,  PlutusScript, IFetcher} from "@meshsdk/core"
+import type { Plutus } from "../types";
 import { APP_WALLET_ADDRESS, title } from "../constants";
 import plutus from "../../plutus.json";
 import { appNetworkId } from "../constants";
@@ -21,18 +20,18 @@ export class MeshAdapter {
   protected meshTxBuilder: MeshTxBuilder;
   protected wallet: MeshWallet;
   protected fetcher: IFetcher;
-  protected pubKeyExchange: string;
-  protected pubKeyIssuer: string;
-  protected mintCompileCode: string;
-  protected storeCompileCode: string;
-  protected storeScriptCbor: string;
-  protected storeScript: PlutusScript;
-  public storeAddress: string;
-  protected storeScriptHash: string;
-  protected mintScriptCbor: string;
-  protected mintScript: PlutusScript;
+  protected pubKeyExchange?: string;
+  protected pubKeyIssuer?: string;
+  protected mintCompileCode?: string;
+  protected storeCompileCode?: string;
+  protected storeScriptCbor?: string;
+  protected storeScript?: PlutusScript;
+  public storeAddress?: string;
+  protected storeScriptHash?: string;
+  protected mintScriptCbor?: string;
+  protected mintScript?: PlutusScript;
 
-  public policyId;
+  public policyId?: string;
  constructor({ wallet = null! }: { wallet?: MeshWallet }) {
     this.wallet = wallet;
     this.fetcher = blockfrostProvider;
@@ -40,12 +39,14 @@ export class MeshAdapter {
       fetcher: this.fetcher,
       evaluator: blockfrostProvider,
     });
+   this.init()
 }
 
 // Tạo một hàm async để khởi tạo dữ liệu
-public async init() {
+  public async init() {
     this.pubKeyIssuer = deserializeAddress(await this.wallet.getChangeAddress()).pubKeyHash;
     this.pubKeyExchange = deserializeAddress(APP_WALLET_ADDRESS).pubKeyHash;
+    console.log("pubKeyIssuer", await this.wallet.getChangeAddress());
     
     this.mintCompileCode = this.readValidator(plutus as Plutus, title.mint);
     this.storeCompileCode = this.readValidator(plutus as Plutus, title.store);
