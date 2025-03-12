@@ -7,12 +7,11 @@ import { WalletType } from "~/types";
 
 declare const window: any;
 
-export const wallets: Record<string, WalletType> = {
-    nami: {
-        id: "nami",
+export const wallets: WalletType[] = [
+    {
         name: "Nami",
         version: "",
-        icon: images.nami.src,
+        image: images.nami,
         api: async function () {
             return await window.cardano.nami.enable();
         },
@@ -22,10 +21,9 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo",
     },
-    eternl: {
-        id: "eternl",
+    {
         name: "Eternl",
-        icon: images.eternl.src,
+        image: images.eternl,
         version: "",
         api: async function () {
             return window.cardano.eternl.enable();
@@ -36,11 +34,10 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chrome.google.com/webstore/detail/eternl/kmhcihpebfmpgmihbkipmjlmmioameka",
     },
-    flint: {
-        id: "flint",
+    {
         name: "Flint",
         version: "",
-        icon: images.flint.src,
+        image: images.flint,
         api: async function () {
             return await window.cardano.flint.enable();
         },
@@ -50,11 +47,10 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chrome.google.com/webstore/detail/flint-wallet/hnhobjmcibchnmglfbldbfabcgaknlkj",
     },
-    lace: {
-        id: "lace",
+    {
         name: "Lace",
         version: "",
-        icon: images.lace.src,
+        image: images.lace,
         api: async function () {
             return await window.cardano.lace.enable();
         },
@@ -64,11 +60,10 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk",
     },
-    gero: {
-        id: "gero",
+    {
         name: "Gero",
         version: "",
-        icon: images.gero.src,
+        image: images.gero,
         api: async function () {
             return await window.cardano.gero.enable();
         },
@@ -78,11 +73,10 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chrome.google.com/webstore/detail/gerowallet/bgpipimickeadkjlklgciifhnalhdjhe",
     },
-    typhon: {
-        id: "typhon",
+    {
         name: "Typhon",
         version: "",
-        icon: images.typhon.src,
+        image: images.typhon,
         api: async function () {
             return await window.cardano.typhon.enable();
         },
@@ -92,10 +86,9 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chrome.google.com/webstore/detail/typhon-wallet/kfdniefadaanbjodldohaedphafoffoh",
     },
-    vespr: {
-        id: "vespr",
+    {
         name: "Vespr",
-        icon: images.vespr.src,
+        image: images.vespr,
         version: "",
         api: async function () {
             return await window.cardano.vespr.enable();
@@ -105,11 +98,10 @@ export const wallets: Record<string, WalletType> = {
         },
         downloadApi: "https://play.google.com/store/apps/details?id=art.nft_craze.gallery.main",
     },
-    yoroi: {
-        id: "yoroi",
+    {
         name: "Yoroi",
         version: "",
-        icon: images.yoroi.src,
+        image: images.yoroi,
         api: async function () {
             return await window.cardano.yoroi.enable();
         },
@@ -119,11 +111,10 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chromewebstore.google.com/detail/yoroi/ffnbelfdoeiohenkjibnmadjiehjhajb",
     },
-    nufi: {
-        id: "nufi",
+    {
         name: "Nufi",
         version: "",
-        icon: images.nufi.src,
+        image: images.nufi,
         api: async function () {
             return await window.cardano.nufi.enable();
         },
@@ -133,6 +124,6 @@ export const wallets: Record<string, WalletType> = {
         downloadApi:
             "https://chromewebstore.google.com/detail/nufi/gpnihlnnodeiiaakbikldcihojploeca",
     },
-};
+];
 
 export default wallets;

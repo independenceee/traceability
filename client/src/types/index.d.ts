@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export type MenuOption = {
     title: string;
     href: string;
@@ -5,9 +7,10 @@ export type MenuOption = {
     disabled: boolean;
 };
 
-export type WalletType = Wallet & {
-    balance?: number;
-    address?: string;
+export type WalletType = {
+    name: string;
+    version?: string;
+    image: StaticImageData;
     downloadApi?: string;
     api?: () => Promise<void>;
     checkApi?: () => Promise<void>;
