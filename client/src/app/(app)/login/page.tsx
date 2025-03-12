@@ -62,9 +62,31 @@ export default function SignInPage() {
                                 })}
                             </section>
                             <section className="overflow-x-hidden overflow-y-auto pr-[20px] mr-[-20px] h-[230px] flex flex-col gap-2 ">
-                                {wallets.map(({ name, image }: WalletType, index: number) => {
-                                    return <Wallet name={name} image={image} key={index} />;
-                                })}
+                                {wallets.map(
+                                    (
+                                        {
+                                            name,
+                                            image,
+                                            api,
+                                            checkApi,
+                                            downloadApi,
+                                            version,
+                                        }: WalletType,
+                                        index: number,
+                                    ) => {
+                                        return (
+                                            <Wallet
+                                                name={name}
+                                                image={image}
+                                                key={index}
+                                                checkApi={checkApi}
+                                                api={api}
+                                                downloadApi={downloadApi}
+                                                version={version}
+                                            />
+                                        );
+                                    },
+                                )}
                             </section>
                         </div>
                     </section>

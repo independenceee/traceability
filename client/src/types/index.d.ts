@@ -13,5 +13,5 @@ export type WalletType = {
     image: StaticImageData;
     downloadApi?: string;
     api?: () => Promise<void>;
-    checkApi?: () => Promise<void>;
+    checkApi?: (() => Promise<boolean>) | undefined;
 };
