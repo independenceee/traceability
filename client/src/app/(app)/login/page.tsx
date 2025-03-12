@@ -25,7 +25,7 @@ export default function SignInPage() {
                                 src={images.logo}
                                 alt="Logo"
                             />
-                            <span className="text-2xl">Generator</span>
+                            <span className="text-2xl">Traceability</span>
                         </Link>
                     </div>
                     <ul className="flex items-center justify-center gap-7">
@@ -47,7 +47,7 @@ export default function SignInPage() {
                 <main className="mt-[60px] mb-[20px] flex items-center justify-center">
                     <section className="w-[540px] box-border py-[35px] px-[45px] bg-slate-900 shadow-lg rounded-md">
                         <div className="flex items-center justify-between">
-                            <div className="w-[120px] text-[16px]">
+                            <div className=" text-[20px]">
                                 <strong>Connect Wallet</strong>
                             </div>
                             <div className="w-[120px] text-[16px] text-end">
@@ -69,6 +69,28 @@ export default function SignInPage() {
                         </div>
                     </section>
                 </main>
+                <section className="mt-[20px] ">
+                    <div className="flex items-center justify-center  text-center ">
+                        <p>Web2 Login Powered by Particle Network</p>
+                    </div>
+                    <div className="flex items-center justify-center  text-center gap-6 my-[20px]">
+                        <Link href={""}>
+                            <SocialIcon style={{ width: 36, height: 36 }} network="x" />
+                        </Link>
+                        <Link href={""}>
+                            <SocialIcon style={{ width: 36, height: 36 }} network="github" />
+                        </Link>
+                    </div>
+                </section>
+
+                <footer className="pb-[20px] text-center">
+                    <Link className="underline-offset-2 underline" href={""} target="_blake">
+                        Help Center
+                    </Link>
+                    <p className="mt-[16px] text-gray-400">
+                        Traceability Network Foundation Independence
+                    </p>
+                </footer>
             </div>
         </div>
     );
