@@ -13,7 +13,7 @@ type Props = {
     className?: string;
 };
 
-export default function NavLink({ redirect, name, isActive, className }: Props) {
+export default function Navbar({ redirect, name, isActive, className }: Props) {
     return (
         <li className="">
             <Link href={redirect} target={redirect.startsWith("http") ? "_blank" : "_self"}>
