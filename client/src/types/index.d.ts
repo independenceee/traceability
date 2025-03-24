@@ -1,9 +1,10 @@
 import { StaticImageData } from "next/image";
+import { IconType } from "react-icons";
 
 export type MenuOption = {
     title: string;
     href: string;
-    icon: string;
+    icon: string | IconType;
     disabled: boolean;
 };
 

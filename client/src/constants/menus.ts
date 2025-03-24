@@ -1,5 +1,9 @@
 import { MenuOption } from "~/types";
 import { routes } from "~/constants/routes";
+import { IoIosGitNetwork } from "react-icons/io";
+import { FaGithub } from "react-icons/fa";
+import { GrCatalogOption } from "react-icons/gr";
+import { AiFillApi } from "react-icons/ai";
 
 export const headers: MenuOption[] = [
     {
@@ -59,25 +63,25 @@ export const footer: MenuOption[] = [
     {
         title: "Website",
         href: "",
-        icon: "globe",
+        icon: IoIosGitNetwork,
         disabled: false,
     },
     {
         title: "Telegram",
         href: "",
-        icon: "send",
+        icon: FaGithub,
         disabled: false,
     },
     {
         title: "Catalyst",
         href: "https://projectcatalyst.io/funds/12/cardano-use-cases-concept/open-source-dynamic-assets-tokennft-generator-cip68",
-        icon: "catalyst",
+        icon: GrCatalogOption,
         disabled: false,
     },
     {
         title: "Youtube",
         href: "",
-        icon: "youtube",
+        icon: AiFillApi,
         disabled: false,
     },
 ];

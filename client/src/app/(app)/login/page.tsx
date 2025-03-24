@@ -9,8 +9,23 @@ import Network from "~/components/network";
 import wallets from "~/constants/wallets";
 import Wallet from "~/components/wallet";
 import { WalletType } from "~/types";
+import { useEffect, useState } from "react";
 
 export default function SignInPage() {
+    const [network, setNetwork] = useState<string>("preprod");
+    useEffect(() => {
+        const networkConnection = localStorage.getItem("network");
+        if (networkConnection) {
+            setNetwork(JSON.parse(networkConnection));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (network) {
+            localStorage.setItem("network", JSON.stringify(network));
+        }
+    }, [network]);
+    
     return (
         <div className="h-screen">
             <div className="mx-auto my-0 flex h-full w-full max-w-[1200px] flex-col">
@@ -51,14 +66,25 @@ export default function SignInPage() {
                                 <strong>Connect Wallet</strong>
                             </div>
                             <div className="w-[120px] text-[16px] text-end">
-                                <strong>Preprod</strong>
+                                <strong>
+                                    {network.charAt(0).toUpperCase() +
+                                        network.slice(1).toLowerCase()}
+                                </strong>
                             </div>
                         </div>
 
                         <div className="flex mt-5">
                             <section className="pr-[30px] border-r-[1px] flex flex-col gap-5 border-solid border-gray-500 mr-[30px] h-[230px] overflow-y-auto overflow-x-hidden">
                                 {networks.map(({ image, name }, index: number) => {
-                                    return <Network image={image} name={name} key={index} />;
+                                    return (
+                                        <Network
+                                            image={image}
+                                            name={name}
+                                            key={index}
+                                            isActive={name.toLowerCase() === network.toLowerCase()}
+                                            setNetwork={setNetwork}
+                                        />
+                                    );
                                 })}
                             </section>
                             <section className="overflow-x-hidden overflow-y-auto pr-[20px] mr-[-20px] h-[230px] flex flex-col gap-2 ">

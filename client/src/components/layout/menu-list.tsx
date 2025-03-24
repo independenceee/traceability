@@ -66,18 +66,18 @@ export function MenuList() {
                         <div
                             className={`${
                                 isOpen ? "flex-row justify-between" : "flex-col"
-                            } flex w-full items-center gap-4 border-t-2 py-2`}
+                            } flex w-full items-center gap-4 border-t-[2px] py-2`}
                         >
                             {footer.map(({ href, icon }, index) => {
-                                const Icon = Icons[icon as keyof typeof Icons] || Icons["arrowRight"];
+                                const Icon = Icons[icon as keyof typeof Icons] || icon;
                                 return (
                                     <Link
                                         key={index}
                                         href={href}
                                         target={href.startsWith("http") ? "_blank" : ""}
-                                        className="flex h-10 w-full items-center justify-center rounded text-secondary hover:text-primary"
+                                        className="flex h-9 w-full items-center justify-center rounded text-secondary hover:text-primary"
                                     >
-                                        <Icon className="h-6 w-6" />
+                                        <Icon className="h-5 w-5" />
                                     </Link>
                                 );
                             })}

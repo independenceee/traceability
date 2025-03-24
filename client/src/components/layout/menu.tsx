@@ -50,7 +50,7 @@ export function Menu() {
                                     : "translate-x-0 opacity-100",
                             )}
                         >
-                            Generator
+                            Traceability
                         </p>
                     </Link>
                 </Button>
