@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(cuid())
+  address    String       @unique @map(name: "address")
+  createdAt  DateTime     @default(now()) @map(name: "created_at")
+  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
+  Media      Media[]
+  Collection Collection[]
+
+  @@map(name: "user")
+}
+
+model WalletNonce {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  address   String   @unique @map(name: "address")
+  nonce     String
+
+  @@map(name: "wallet_nonce")
+}
+
+model Collection {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now()) @map(name: "created_at")
+  updatedAt   DateTime   @updatedAt @map(name: "updated_at")
+  userId      String     @map(name: "user_id")
+  name        String     @map(name: "name")
+  thumbnail   String?    @map(name: "thumbnail")
+  description String?    @map(name: "description")
+  user        User       @relation(fields: [userId], references: [id])
+  Metadata    Metadata[]
+
+  @@map(name: "collection")
+}
+
+model Metadata {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now()) @map(name: "created_at")
+  updatedAt    DateTime   @updatedAt @map(name: "updated_at")
+  collectionId String     @map(name: "collection_id")
+  assetName    String?    @map(name: "asset_name")
+  content      String     @map(name: "content")
+  nftReference String[]   @map(name: "nft_reference")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@map(name: "metadata")
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    String   @map(name: "user_id")
+  name      String
+  type      String
+  url       String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map(name: "media")
+}

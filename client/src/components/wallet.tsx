@@ -26,6 +26,7 @@ export default function Wallet({ name, image, checkApi, downloadApi }: WalletTyp
                 } else {
                     setIsDownload(false);
                 }
+                /* eslint-disable @typescript-eslint/no-unused-vars */
             } catch (error) {
                 setIsDownload(false);
             }

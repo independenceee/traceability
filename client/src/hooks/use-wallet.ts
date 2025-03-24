@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { BrowserWallet, Wallet } from "@meshsdk/core";
 import { Session } from "next-auth";
-import { isNil } from "lodash";
-import { signIn, signOut } from "next-auth/react";
-import { appNetwork, appNetworkId } from "~/constants/environments";
+// import { isNil } from "lodash";
+// import { signIn, signOut } from "next-auth/react";
+// import { appNetwork, appNetworkId } from "~/constants/environments";
 
 export interface WalletStoreType {
     wallet: Wallet | null;
@@ -53,8 +53,10 @@ export const useWallet = create<WalletStoreType>((set, get) => ({
         }
         return txHash;
     },
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    signIn: async (session: Session | null, wallet: Wallet) => {
 
-    signIn: async (session: Session | null, wallet: Wallet) => {},
+    },
 
     disconnect: async () => {
         set({ browserWallet: null!, wallet: null! });
