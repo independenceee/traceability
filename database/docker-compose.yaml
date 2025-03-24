@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=traceability
+      - POSTGRES_PASSWORD=traceability
+      - POSTGRES_DB=traceability
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
