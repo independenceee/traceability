@@ -1,7 +1,22 @@
 import { Module } from '@nestjs/common';
+import { AssetsModule } from './assets/assets.module';
+import { BlockfrostModule } from './blockfrost/blockfrost.module';
+import { KoiosModule } from './koios/koios.module';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module';
+import { StatisticModule } from './statistic/statistic.module';
 
 @Module({
-  imports: [],
-  providers: [],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        AssetsModule,
+        BlockfrostModule,
+        KoiosModule,
+        PrismaModule,
+        StatisticModule,
+    ],
+    providers: [],
 })
 export class AppModule {}
