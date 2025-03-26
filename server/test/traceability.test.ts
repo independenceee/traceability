@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { blockfrostProvider } from "../scripts/libs/cardano";
+import { blockfrostProvider } from "../contract/scripts/libs/cardano";
 import { describe, test, expect, beforeEach, jest } from "@jest/globals";
 import { deserializeAddress, MeshWallet } from "@meshsdk/core";
-import { APP_WALLET_ADDRESS } from "../scripts/constants";
+import { APP_WALLET_ADDRESS } from "../contract/scripts/constants";
 import { TraceAbilityContract } from "contract/scripts/txbuilder/traceability.txbuilder";
 
 describe("Mint, Burn, Update, Remove Assets (NFT/TOKEN) CIP68", function () {
@@ -14,7 +14,10 @@ describe("Mint, Burn, Update, Remove Assets (NFT/TOKEN) CIP68", function () {
             submitter: blockfrostProvider,
             key: {
                 type: "mnemonic",
-                words: process.env.APP_MNEMONIC?.split(" ") || [],
+                words:
+                    "fame volcano bike castle pear limb process pact clown drop dutch family doll ready flower decline curve rescue style reform gap ski network holiday".split(
+                        " ",
+                    ) || [],
             },
         });
     });

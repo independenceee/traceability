@@ -1,12 +1,4 @@
-import {
-    CIP68_222,
-    stringToHex,
-    mConStr0,
-    CIP68_100,
-    metadataToCip68,
-    mConStr1,
-    deserializeAddress,
-} from "@meshsdk/core";
+import { CIP68_222, stringToHex, mConStr0, CIP68_100, metadataToCip68, mConStr1, deserializeAddress } from "@meshsdk/core";
 
 import { MeshAdapter } from "../adapters/mesh.adapter";
 import { APP_WALLET_ADDRESS, EXCHANGE_FEE_PRICE } from "../constants";
@@ -38,10 +30,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const txOutReceiverMap = new Map<string, { unit: string; quantity: string }[]>();
         await Promise.all(
             params.map(async ({ assetName, metadata, quantity = "1", receiver = "" }) => {
-                const existUtXOwithUnit = await this.getAddressUTXOAsset(
-                    this.storeAddress!,
-                    this.policyId! + CIP68_100(stringToHex(assetName)),
-                );
+                const existUtXOwithUnit = await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (existUtXOwithUnit?.output?.plutusData) {
                     const pk = await getPkHash(existUtXOwithUnit?.output?.plutusData as string);
                     if (pk !== deserializeAddress(walletAddress).pubKeyHash) {
@@ -62,19 +51,6 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                         ]);
                     }
                     unsignedTx
-                        .spendingPlutusScriptV3()
-                        .txIn(existUtXOwithUnit.input.txHash, existUtXOwithUnit.input.outputIndex)
-                        .txInInlineDatumPresent()
-                        .txInRedeemerValue(mConStr0([]))
-                        .txInScript(this.storeScriptCbor!)
-                        .txOut(this.storeAddress!, [
-                            {
-                                unit: this.policyId! + CIP68_100(stringToHex(assetName)),
-                                quantity: "1",
-                            },
-                        ])
-                        .txOutInlineDatumValue(metadataToCip68(metadata))
-
                         .mintPlutusScriptV3()
                         .mint(quantity, this.policyId!, CIP68_222(stringToHex(assetName)))
                         .mintingScript(this.mintScriptCbor!)
@@ -121,23 +97,17 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         });
 
         unsignedTx
-
             .txOut(APP_WALLET_ADDRESS, [
                 {
                     unit: "lovelace",
-                    quantity: EXCHANGE_FEE_PRICE,
+                    quantity: "1000000",
                 },
             ])
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
-            .setNetwork(appNetwork);
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
+            .setNetwork("preprod");
         return await unsignedTx.complete();
     };
 
@@ -154,10 +124,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -171,10 +138,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -222,12 +186,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -241,19 +200,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @param txHash - string
      * @returns
      */
-    update = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    update = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -282,12 +236,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -315,12 +264,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .txOutDatumHashValue("")
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            );
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address);
 
         return await unsignedTx.complete();
     };
@@ -345,12 +289,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .txOutDatumHashValue("")
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            );
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address);
 
         return await unsignedTx.complete();
     };
@@ -360,12 +299,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC1]: Cast assets with the desired quantity and metadata with all required fields.
      *
      */
-    tc1 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        receiver: string;
-    }) => {
+    tc1 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; receiver: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -395,12 +329,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -410,12 +339,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC2]: Casting assets but default fields in metadata (name, image, media_type, author) do not exist.
      *
      */
-    tc2 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc2 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -445,12 +369,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -460,12 +379,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [SC3]: Casting assets with defined metadata but the keys (name, image, media_type) exist but the values of the fields are partially or completely missing.
      *
      */
-    tc3 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc3 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -495,12 +409,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -510,12 +419,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC4]: Casting property with fully defined metadata for both kay and value but author address is empty or wrong.
      *
      */
-    tc4 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc4 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -545,12 +449,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -560,12 +459,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC5]: Mint assets with transaction fees less than the specified amount included in the validator parameters.
      *
      */
-    tc5 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc5 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -595,12 +489,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -610,12 +499,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC6]: Mint asset with correct transaction fee as params. however wrong exchange address defined in params.
      *
      */
-    tc6 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc6 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -636,24 +520,16 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             ])
             .txOutInlineDatumValue(metadataToCip68(param.metadata))
 
-            .txOut(
-                "addr_test1qzwu6jcqk8f96fxq02pvq2h4a927ggn35f2gzdklfte4kwx0sd5zdvsat2chsyyjxkjxcg6uz2y46avd46mzqdgdy3dsckqxs4",
-                [
-                    {
-                        unit: "lovelace",
-                        quantity: "1000000",
-                    },
-                ],
-            )
+            .txOut("addr_test1qzwu6jcqk8f96fxq02pvq2h4a927ggn35f2gzdklfte4kwx0sd5zdvsat2chsyyjxkjxcg6uz2y46avd46mzqdgdy3dsckqxs4", [
+                {
+                    unit: "lovelace",
+                    quantity: "1000000",
+                },
+            ])
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -663,12 +539,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC7]: Token creator sent wrong store address given in params.
      *
      */
-    tc7 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc7 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -681,15 +552,12 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .mint("1", this.policyId!, CIP68_100(stringToHex(param.assetName)))
             .mintingScript(this.mintScriptCbor!)
             .mintRedeemerValue(mConStr0([]))
-            .txOut(
-                "addr_test1qzwu6jcqk8f96fxq02pvq2h4a927ggn35f2gzdklfte4kwx0sd5zdvsat2chsyyjxkjxcg6uz2y46avd46mzqdgdy3dsckqxs4",
-                [
-                    {
-                        unit: this.policyId! + CIP68_100(stringToHex(param.assetName)),
-                        quantity: "1",
-                    },
-                ],
-            )
+            .txOut("addr_test1qzwu6jcqk8f96fxq02pvq2h4a927ggn35f2gzdklfte4kwx0sd5zdvsat2chsyyjxkjxcg6uz2y46avd46mzqdgdy3dsckqxs4", [
+                {
+                    unit: this.policyId! + CIP68_100(stringToHex(param.assetName)),
+                    quantity: "1",
+                },
+            ])
             .txOutInlineDatumValue(metadataToCip68(param.metadata))
 
             .txOut(APP_WALLET_ADDRESS, [
@@ -701,12 +569,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -716,12 +579,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC8]: Token creator sent wrong store address given in params.
      *
      */
-    tc8 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc8 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -751,12 +609,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -766,12 +619,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [TC9]: The output of UTxOs is missing the part sent to the smart contract store address or sent to the exchange fee is missing.
      *
      */
-    tc9 = async (param: {
-        assetName: string;
-        metadata: Record<string, string>;
-        quantity: string;
-        txHash?: string;
-    }) => {
+    tc9 = async (param: { assetName: string; metadata: Record<string, string>; quantity: string; txHash?: string }) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder
 
@@ -794,12 +642,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .changeAddress(walletAddress)
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
         return await unsignedTx.complete();
     };
@@ -809,19 +652,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @description [SC10]: Asset update successful. Exchange fee transferred to exchange address. Asset updated successful.
      *
      */
-    tc10 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc10 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -849,12 +687,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -864,19 +697,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC11
      * @description [TC11]: In metadata change author field or no author field
      */
-    tc11 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc11 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -904,12 +732,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -919,19 +742,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC12
      * @description [TC12]: Author did not send signature to confirm transaction.
      */
-    tc12 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc12 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -958,12 +776,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             ])
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -973,19 +786,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC13
      * @description [TC13]: The user entered an incorrect asset name or did not enter an asset name.
      */
-    tc13 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc13 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1013,12 +821,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1028,19 +831,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC14
      * @description [TC13]: The user entered an incorrect asset name or did not enter an asset name.
      */
-    tc14 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc14 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1068,12 +866,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1083,19 +876,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC15
      * @description [TC15]: The user entered an incorrect asset name or did not enter an asset name.
      */
-    tc15 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc15 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1123,12 +911,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1138,19 +921,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC16
      * @description [TC16]: The output of UTxOs is missing the part sent to the smart contract store address or sent to the exchange fee is missing.
      */
-    tc16 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc16 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1172,12 +950,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1187,19 +960,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC17
      * @description [TC17]: The transaction input does not contain a UTxO containing a Reference Asset.
      */
-    tc17 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc17 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1215,12 +983,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1230,19 +993,14 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
      * @method TC18
      * @description [TC18]: The transaction input does not contain a UTxO containing a Reference Asset.
      */
-    tc18 = async (
-        params: { assetName: string; metadata: Record<string, string>; txHash?: string }[],
-    ) => {
+    tc18 = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, metadata, txHash }) => {
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
                 unsignedTx
                     .spendingPlutusScriptV3()
@@ -1265,12 +1023,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1285,10 +1038,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1302,10 +1052,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1353,12 +1100,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1373,10 +1115,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1390,10 +1129,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1441,12 +1177,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1461,10 +1192,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1478,10 +1206,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1529,12 +1254,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1549,10 +1269,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1566,10 +1283,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1617,12 +1331,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1637,10 +1346,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1654,10 +1360,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1705,12 +1408,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1730,10 +1428,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const unsignedTx = this.meshTxBuilder;
         await Promise.all(
             params.map(async ({ assetName, quantity, txHash }) => {
-                const userUtxos = await this.getAddressUTXOAssets(
-                    walletAddress,
-                    this.policyId! + CIP68_222(stringToHex(assetName)),
-                );
+                const userUtxos = await this.getAddressUTXOAssets(walletAddress, this.policyId! + CIP68_222(stringToHex(assetName)));
                 const amount = userUtxos.reduce((amount, utxos) => {
                     return (
                         amount +
@@ -1747,10 +1442,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
                 }, 0);
                 const storeUtxo = !isNil(txHash)
                     ? await this.getUtxoForTx(this.storeAddress!, txHash)
-                    : await this.getAddressUTXOAsset(
-                          this.storeAddress!,
-                          this.policyId! + CIP68_100(stringToHex(assetName)),
-                      );
+                    : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(assetName)));
                 if (!storeUtxo) throw new Error("Store UTXO not found");
 
                 if (-Number(quantity) === amount) {
@@ -1798,12 +1490,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1830,16 +1517,10 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
         const { utxos, walletAddress, collateral } = await this.getWalletForTx();
         const storeUtxo = !isNil(param.txHash)
             ? await this.getUtxoForTx(this.storeAddress!, param.txHash)
-            : await this.getAddressUTXOAsset(
-                  this.storeAddress!,
-                  this.policyId! + CIP68_100(stringToHex(param.assetName)),
-              );
+            : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(param.assetName)));
         const storeUtxo1 = !isNil(test.txHash)
             ? await this.getUtxoForTx(this.storeAddress!, test.txHash)
-            : await this.getAddressUTXOAsset(
-                  this.storeAddress!,
-                  this.policyId! + CIP68_100(stringToHex(test.assetName)),
-              );
+            : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(test.assetName)));
 
         if (!storeUtxo) throw new Error("Store UTXO not found");
         if (!storeUtxo1) throw new Error("Store1 UTXO not found");
@@ -1878,12 +1559,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();
@@ -1911,16 +1587,10 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
 
         const storeUtxo = !isNil(param.txHash)
             ? await this.getUtxoForTx(this.storeAddress!, param.txHash)
-            : await this.getAddressUTXOAsset(
-                  this.storeAddress!,
-                  this.policyId! + CIP68_100(stringToHex(param.assetName)),
-              );
+            : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(param.assetName)));
         const storeUtxo1 = !isNil(test.txHash)
             ? await this.getUtxoForTx(this.storeAddress!, test.txHash)
-            : await this.getAddressUTXOAsset(
-                  this.storeAddress!,
-                  this.policyId! + CIP68_100(stringToHex(test.assetName)),
-              );
+            : await this.getAddressUTXOAsset(this.storeAddress!, this.policyId! + CIP68_100(stringToHex(test.assetName)));
 
         if (!storeUtxo) throw new Error("Store UTXO not found");
         if (!storeUtxo1) throw new Error("Store1 UTXO not found");
@@ -1963,12 +1633,7 @@ export class TraceAbilityContract extends MeshAdapter implements ITraceAbilityCo
             .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
             .changeAddress(walletAddress)
             .selectUtxosFrom(utxos)
-            .txInCollateral(
-                collateral.input.txHash,
-                collateral.input.outputIndex,
-                collateral.output.amount,
-                collateral.output.address,
-            )
+            .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
             .setNetwork(appNetwork);
 
         return await unsignedTx.complete();

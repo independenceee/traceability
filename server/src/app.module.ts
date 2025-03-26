@@ -5,6 +5,7 @@ import { KoiosModule } from './koios/koios.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { StatisticModule } from './statistic/statistic.module';
+import { ContractModule } from './contract/contract.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { StatisticModule } from './statistic/statistic.module';
         KoiosModule,
         PrismaModule,
         StatisticModule,
+        ContractModule,
     ],
     providers: [],
 })

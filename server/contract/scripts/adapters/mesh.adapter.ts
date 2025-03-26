@@ -12,7 +12,6 @@ import type { UTxO, PlutusScript, IFetcher } from "@meshsdk/core";
 import type { Plutus } from "../types";
 import { APP_WALLET_ADDRESS, title } from "../constants";
 import plutus from "../../plutus.json";
-import { appNetworkId } from "../constants";
 import { blockfrostProvider } from "../libs/cardano";
 
 export class MeshAdapter {
@@ -43,13 +42,10 @@ export class MeshAdapter {
 
     // Tạo một hàm async để khởi tạo dữ liệu
     public async init() {
-        this.pubKeyIssuer = deserializeAddress(await this.wallet.getChangeAddress()).pubKeyHash;
+        this.pubKeyIssuer = deserializeAddress(this.wallet.getChangeAddress()).pubKeyHash;
         this.pubKeyExchange = deserializeAddress(APP_WALLET_ADDRESS).pubKeyHash;
-        console.log("pubKeyIssuer", await this.wallet.getChangeAddress());
-
         this.mintCompileCode = this.readValidator(plutus as Plutus, title.mint);
         this.storeCompileCode = this.readValidator(plutus as Plutus, title.store);
-
         this.storeScriptCbor = applyParamsToScript(this.storeCompileCode, [
             this.pubKeyExchange,
             BigInt(1),
@@ -61,12 +57,12 @@ export class MeshAdapter {
         this.storeAddress = serializeAddressObj(
             scriptAddress(
                 deserializeAddress(
-                    serializePlutusScript(this.storeScript, undefined, appNetworkId, false).address,
+                    serializePlutusScript(this.storeScript, undefined, 0, false).address,
                 ).scriptHash,
                 deserializeAddress(APP_WALLET_ADDRESS).stakeCredentialHash,
                 false,
             ),
-            appNetworkId,
+            0,
         );
 
         this.storeScriptHash = deserializeAddress(this.storeAddress).scriptHash;

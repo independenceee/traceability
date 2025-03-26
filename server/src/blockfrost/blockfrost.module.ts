@@ -5,6 +5,6 @@ import { BlockfrostService } from './blockfrost.service';
 @Module({
     controllers: [BlockfrostController],
     providers: [BlockfrostService],
-    exports: [BlockfrostService]
+    exports: [BlockfrostService],
 })
 export class BlockfrostModule {}

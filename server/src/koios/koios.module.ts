@@ -5,6 +5,6 @@ import { KoiosController } from './koios.controller';
 @Module({
     controllers: [KoiosController],
     providers: [KoiosService],
-    exports: [KoiosService]
+    exports: [KoiosService],
 })
 export class KoiosModule {}

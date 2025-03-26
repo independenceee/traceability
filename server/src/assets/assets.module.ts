@@ -5,7 +5,7 @@ import { BlockfrostService } from 'src/blockfrost/blockfrost.service';
 import { KoiosService } from 'src/koios/koios.service';
 
 @Module({
-    providers: [AssetsService,BlockfrostService, KoiosService],
+    providers: [AssetsService, BlockfrostService, KoiosService],
     controllers: [AssetsController],
 })
 export class AssetsModule {}

@@ -4,10 +4,10 @@ import { BlockfrostProvider } from "@meshsdk/core";
 import { KoiosFetcher } from "./koios";
 
 const blockfrostFetcherSingleton = () => {
-    return new BlockfrostFetcher(BLOCKFROST_API_KEY);
+    return new BlockfrostFetcher(BLOCKFROST_API_KEY || "preprodKz0sm15W5bVxaQNCd3PjDU8ZXeN1iCGm");
 };
 const blockfrostProviderSingleton = () => {
-    return new BlockfrostProvider(BLOCKFROST_API_KEY);
+    return new BlockfrostProvider(BLOCKFROST_API_KEY || "preprodKz0sm15W5bVxaQNCd3PjDU8ZXeN1iCGm");
 };
 const koiosFetcherSingleton = () => {
     return new KoiosFetcher(KOIOS_TOKEN);

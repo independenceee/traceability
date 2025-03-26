@@ -9,7 +9,7 @@ const appNetwork: Network =
 const appNetworkId = appNetwork === "mainnet" ? 1 : 0;
 const IPFS_ENDPOINT = process.env.IPFS_ENDPOINT || "";
 const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://ipfs.io/";
-export const APP_WALLET_ADDRESS = process.env.APP_WALLET_ADDRESS || "";
+export const APP_WALLET_ADDRESS = process.env.APP_WALLET_ADDRESS || "addr_test1qz8rk49v5uxxw7x6ef0ea38fnfupwpfwvnerj7ggp7tmajn3sxytj6rj2ye29nmtkzf9htglfvcwqqyepefxkt55gdsscq754p";
 export const EXCHANGE_FEE_PRICE = process.env.EXCHANGE_FEE_PRICE || "1000000"; //lovelace
 
 export const MINT_REFERENCE_SCRIPT_HASH = process.env.MINT_REFERENCE_SCRIPT_HASH || "";
