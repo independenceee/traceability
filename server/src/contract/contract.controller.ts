@@ -1,9 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from "@nestjs/common";
 import { ContractService } from "./contract.service";
 
 @Controller("contract")
 export class ContractController {
     constructor(private contractService: ContractService) {}
+
+    @HttpCode(HttpStatus.OK)
+    @Get("policy_id")
+    getPolicyId(@Query("wallet_address") walletAddress: string) {
+        return this.contractService.getPolicyId({ walletAddress: walletAddress });
+    }
     @HttpCode(HttpStatus.OK)
     @Post("mint")
     createMint(

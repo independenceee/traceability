@@ -1,4 +1,4 @@
-import { assetName, BlockfrostProvider, deserializeAddress, MeshWallet } from "@meshsdk/core";
+import { assetName, BlockfrostProvider, deserializeAddress, MeshWallet, policyId } from "@meshsdk/core";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TraceAbilityContract } from "contract/scripts/txbuilder/traceability.txbuilder";
@@ -7,6 +7,31 @@ import { isEmpty, isNil, result } from "lodash";
 @Injectable()
 export class ContractService {
     constructor(private configService: ConfigService) {}
+
+    async getPolicyId({ walletAddress }: { walletAddress: string }) {
+        if (isNil(walletAddress)) {
+            throw new Error("walletAddress not found");
+        }
+        const blockfrost = new BlockfrostProvider(
+            (this.configService.get("BLOCKFROST_PROJECT_API_KEY_PREPROD") as string) || "preprodKz0sm15W5bVxaQNCd3PjDU8ZXeN1iCGm",
+        );
+        const wallet = new MeshWallet({
+            networkId: 0,
+            fetcher: blockfrost,
+            submitter: blockfrost,
+            key: {
+                type: "address",
+                address: walletAddress,
+            },
+        });
+        const traceabilityContract: TraceAbilityContract = new TraceAbilityContract({
+            wallet: wallet,
+        });
+        return {
+            policy_id: traceabilityContract.policyId,
+        };
+    }
+
     async createMint({
         walletAddress,
         assets,
