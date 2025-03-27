@@ -11,6 +11,7 @@ import nufi from "./nufi.png";
 import mainnet from "./mainnet.png";
 import preprod from "./preprod.png";
 import preview from "./preview.png";
+import about from "./about.png";
 
 export default {
     logo: logo,
@@ -26,4 +27,5 @@ export default {
     mainnet: mainnet,
     preprod: preprod,
     preview: preview,
+    about: about,
 } as const;

@@ -1,5 +1,5 @@
 import images from "~/public/images";
-import WalletConnectButton from "~/components/wallet-connect-button";
+import WalletConnectButton from "~/components/account";
 import { useSidebarToggle } from "~/hooks/use-sidebar-toggle";
 import { Breadcrumb } from "../ui/breadcrumb";
 import { cn } from "~/lib/utils";

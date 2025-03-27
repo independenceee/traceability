@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 
 export default function SignInPage() {
     const [network, setNetwork] = useState<string>("preprod");
+    
     useEffect(() => {
         const networkConnection = localStorage.getItem("network");
         if (networkConnection) {
@@ -25,7 +26,9 @@ export default function SignInPage() {
             localStorage.setItem("network", JSON.stringify(network));
         }
     }, [network]);
+
     
+
     return (
         <div className="h-screen">
             <div className="mx-auto my-0 flex h-full w-full max-w-[1200px] flex-col">

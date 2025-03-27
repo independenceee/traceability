@@ -7,7 +7,7 @@ export default function RootLayout() {
                 headerShown: false,
             }}
         >
-            <Stack.Screen name="Index" />
+            <Stack.Screen name="History" />
         </Stack>
     );
 }

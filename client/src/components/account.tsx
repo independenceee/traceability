@@ -7,15 +7,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { MdOutlineFeedback } from "react-icons/md";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { useWallet } from "~/hooks/use-wallet";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { appNetwork } from "~/constants/environments";
 import CopyButton from "./copy";
 import { Separator } from "~/components/ui/separator";
+import { useRouter } from "next/navigation";
 export default function Account() {
-    const { wallet, address, getBalance, browserWallet, stakeAddress } = useWallet();
+    const router = useRouter();
+    const { wallet, address, disconnect, getBalance, browserWallet, stakeAddress } = useWallet();
     const [balance, setBalance] = useState<number>(0);
 
     useEffect(() => {
@@ -48,8 +49,8 @@ export default function Account() {
                     <p className={cn("text-left text-[14px] leading-4")}>
                         <CountUp
                             start={0}
-                            end={Number((balance / 1000000).toFixed(6))}
-                            decimals={6}
+                            end={Number((balance / 1000000).toFixed(4))}
+                            decimals={4}
                         />{" "}
                         ₳
                     </p>
@@ -76,8 +77,8 @@ export default function Account() {
                         <p className="text-sm text-gray-400 capitalize"> {appNetwork}</p>
                     </div>
                 </div>
-                <Separator className="my-4 bg-slate-500" />
-                <div className="space-y-4">
+                <Separator className="my-2 bg-slate-500" />
+                <div className="space-y-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <p className="text-sm text-gray-400">Stake:</p>
@@ -128,7 +129,10 @@ export default function Account() {
                 <div className={cn("leading-0 h-[1px] overflow-hidden bg-slate-500")} />
                 <div className={cn("flex flex-col items-center gap-3")}>
                     <Button
-                        onClick={() => signOut()}
+                        onClick={() => {
+                            router.push("/");
+                            disconnect();
+                        }}
                         className={cn(
                             "w-[180px] cursor-pointer rounded-[35px] bg-slate-500 text-center text-[14px] leading-[25px] text-gray-400",
                         )}

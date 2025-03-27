@@ -6,7 +6,7 @@ import { MeshWallet, BlockfrostProvider, hexToString } from "@meshsdk/core";
 import { ConfigService } from "@nestjs/config";
 import { TraceAbilityContract } from "../../contract/scripts/txbuilder/traceability.txbuilder";
 import { Asset } from "./interfaces/asset.interface";
-import { convertToKeyValue } from "contract/scripts/utils";
+import { convertToKeyValue, datumToJson, parseError } from "contract/scripts/utils";
 
 @Injectable()
 export class AssetsService {
@@ -15,7 +15,7 @@ export class AssetsService {
         private configService: ConfigService,
         private blockfrostService: BlockfrostService,
     ) {}
-    async getAssets({ page, pageSize, walletAddress }: { page: number; pageSize: number; walletAddress: string }) {
+    async getAssets({ page = 1, pageSize = 12, walletAddress }: { page: number; pageSize: number; walletAddress: string }) {
         if (isNil(walletAddress)) {
             throw new Error("walletAddress is Null");
         }
@@ -76,5 +76,116 @@ export class AssetsService {
             total_page: Math.ceil(total / pageSize),
             page: page,
         };
+    }
+
+    async getAsset({ unit }: { unit: string }) {
+        try {
+            const assetDetails = await this.blockfrostService.assetsById(unit);
+            const userAssetsDetails = await this.blockfrostService.assetsById(unit.replace("000643b0", "000de140"));
+            if (isNil(assetDetails)) {
+                throw new Error("Asset not found");
+            }
+            assetDetails.quantity = userAssetsDetails.quantity;
+            const assetTxs = await this.blockfrostService.assetsHistory(unit);
+            const transaction = await this.blockfrostService.txsUtxos(assetTxs[0].tx_hash);
+            const assetOutput = transaction.outputs.find(function (output) {
+                const asset = output.amount.find(function (amt) {
+                    return amt.unit === unit;
+                });
+                return asset !== undefined;
+            });
+            const metadata = assetOutput?.inline_datum
+                ? ((await datumToJson(assetOutput.inline_datum, {
+                      contain_pk: true,
+                  })) as Record<string, string>)
+                : {};
+            const assetTransactions = await this.blockfrostService.assetsHistory(unit);
+            const data = {
+                ...assetDetails,
+                metadata: metadata,
+                transaction_history: assetTransactions,
+            };
+            return {
+                data,
+                message: "Success",
+            };
+        } catch (error) {
+            return {
+                data: null,
+                message: parseError(error),
+            };
+        }
+    }
+
+    async getAssetHistory({ unit, page = 1, pageSize = 12 }: { unit: string; page: number; pageSize: number }) {
+        try {
+            const assetTxs = await this.blockfrostService.assetsTransactions(unit);
+            const total = assetTxs.length;
+            const assetsSlice = assetTxs.slice((page - 1) * pageSize, page * pageSize);
+
+            const assetHistories = await Promise.all(
+                assetsSlice.map(async (assetTx) => {
+                    const specialTransaction = await this.blockfrostService.txs(assetTx.tx_hash);
+                    const assetTxUTxO = await this.blockfrostService.txsUtxos(assetTx.tx_hash);
+                    const assetInput = assetTxUTxO.inputs.find(function (input) {
+                        const asset = input.amount.find(function (amt) {
+                            return amt.unit === unit;
+                        });
+                        return asset !== undefined;
+                    });
+
+                    const assetOutput = assetTxUTxO.outputs.find(function (output) {
+                        const asset = output.amount.find(function (amt) {
+                            return amt.unit === unit;
+                        });
+                        return asset !== undefined;
+                    });
+
+                    if (!assetInput && assetOutput) {
+                        return {
+                            txHash: assetTx.tx_hash,
+                            datetime: assetTx.block_time,
+                            fee: specialTransaction.fees,
+                            status: "Completed",
+                            action: "Mint",
+                        };
+                    }
+
+                    if (!assetOutput && assetInput) {
+                        return {
+                            txHash: assetTx.tx_hash,
+                            datetime: assetTx.block_time,
+                            fee: specialTransaction.fees,
+                            status: "Completed",
+                            action: "Burn",
+                        };
+                    }
+
+                    if (assetInput && assetOutput) {
+                        return {
+                            txHash: assetTx.tx_hash,
+                            datetime: assetTx.block_time,
+                            fee: specialTransaction.fees,
+                            status: "Completed",
+                            action: "Update",
+                        };
+                    }
+                }),
+            );
+
+            const response = assetHistories.filter((history) => !isNil(history));
+
+            return {
+                data: response,
+                totalItem: total,
+                totalPage: Math.ceil(total / pageSize),
+                currentPage: page,
+            };
+        } catch (e) {
+            return {
+                data: [],
+                message: parseError(e),
+            };
+        }
     }
 }

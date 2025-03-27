@@ -15,9 +15,14 @@ import Image from "next/image";
 import { cn } from "~/lib/utils";
 import { WalletType } from "~/types";
 import { useEffect, useState } from "react";
+import { useWallet } from "~/hooks/use-wallet";
+import { useRouter } from "next/navigation";
 
 export default function Wallet({ name, image, checkApi, downloadApi }: WalletType) {
+    const router = useRouter(); // Hook để
+    const { connectWallet } = useWallet();
     const [isDownload, setIsDownload] = useState<boolean>(true);
+
     useEffect(() => {
         (async function () {
             try {
@@ -34,7 +39,7 @@ export default function Wallet({ name, image, checkApi, downloadApi }: WalletTyp
         // @typescript-eslint/no-unused-vars
     }, []);
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         if (downloadApi) {
             if (
                 typeof downloadApi === "string" &&
@@ -73,7 +78,22 @@ export default function Wallet({ name, image, checkApi, downloadApi }: WalletTyp
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={isDownload ? undefined : handleDownload}>
+                    <AlertDialogAction
+                        onClick={
+                            isDownload
+                                ? async () => {
+                                      await connectWallet({
+                                          icon: image,
+                                          id: "1",
+                                          name: name,
+                                          version: "1.1.4",
+                                      });
+
+                                      router.push("/dashboard");
+                                  }
+                                : handleDownload
+                        }
+                    >
                         {isDownload ? "Continue" : "Download"}
                     </AlertDialogAction>
                 </AlertDialogFooter>

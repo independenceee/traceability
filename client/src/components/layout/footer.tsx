@@ -24,16 +24,17 @@ const Footer = function ({ className = "" }: { className?: string }) {
                                 src={images.logo}
                                 alt="Logo"
                             />
-                            <span className="text-2xl">Generator</span>
+                            <span className="text-2xl">Traceability</span>
                         </Link>
 
                         <p className="mx-0 mb-[12px] mt-[35px] text-[15px] leading-[25px] text-gray-300 max-md:mt-[15px] max-md:mb-[20px] max-md:leading-[16px] max-md:text-[12px]">
-                            CIP68 Generator is a tool designed to simplify the creation, management,
-                            and burning of CIP68-compliant native assets on the Cardano platform.
+                            Supply Chain Traceability Generator: Simplifying Asset Management on
+                            Blockchain, Open-Source Transparency for Supply Chains, Simplify
+                            Blockchain-Based Supply Chain Tracking.
                         </p>
 
                         <p className={"text-[15px] leading-[22px] text-gray-500"}>
-                            cardano2vn@gmail.com
+                            nguyenkhanh17112003@gmail.com
                         </p>
                     </div>
 
@@ -202,7 +203,7 @@ const Footer = function ({ className = "" }: { className?: string }) {
                         </div>
                     </ul>
                     <div className="text-[15px] text-[rgb(153,153,153)] max-md:text-[12px] max-md:whitespace-normal max-md:scale-[0.8] text-end">
-                        © 2024 Design & Develop By Cardano2vn, Version {"1.0.1"}
+                        © 2025 Design & Develop By Independence, Version {"1.0.1"}
                     </div>
                 </footer>
                 {/* bottom-end */}
