@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getAppStatistic } from "@/services/blockchain/get-app-statistic";
-import StatisticItem from "./_components/statistic-item";
+import StatisticItem from "@/components/statistic";
 import Title from "@/components/title";
-import Feature from "./_components/feature-section";
-import { founderData } from "../../../constants/founders";
-import Founder from "./_components/founder-section";
+import Feature from "@/components/feature";
+import { founderData } from "@/constants/founders";
+import Founder from "@/components/founder";
 import { routes } from "@/constants/routes";
 
 import Image from "next/image";
 import { appImage } from "@/public/images";
-import Header from "../_layout/header";
-import Footer from "../_layout/footer";
+import Header from "./_layout/header";
+import Footer from "./_layout/footer";
 import { ArrowRight } from "lucide-react";
 import features from "@/constants/features";
 export default async function LandingPage() {

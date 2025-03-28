@@ -2,13 +2,13 @@ import { mainMenu } from "@/constants/menu-list";
 import { cn } from "@/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SheetMenu } from "./sheet-menu";
 import { Icons } from "@/components/icons";
+import { SheetMenu } from "./layouts/mobile-dashboard/sheet-menu";
 
 export default function BottomTab() {
   const pathname = usePathname();
   return (
-    <>
+    <div>
       <div className="z-9999 border-1 fixed bottom-0 left-0 right-0 h-16 w-full rounded-t-3xl border bg-section">
         <div className="mx-auto grid h-full grid-cols-4">
           {mainMenu.slice(0, 3).map(({ title, href, icon }, index) => {
@@ -32,6 +32,6 @@ export default function BottomTab() {
           <SheetMenu />
         </div>
       </div>
-    </>
+    </div>
   );
 }

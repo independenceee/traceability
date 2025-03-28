@@ -54,13 +54,13 @@ const config: Config = {
           "35%": { transform: "scale3d(0, 0, 1)" },
         },
         scaleAnimation: {
-                "0%, 70%, 100%": {
-                    transform: "scale(1)",
-                },
-                "35%": {
-                    transform: "scale(0)",
-                },
-            },
+          "0%, 70%, 100%": {
+            transform: "scale(1)",
+          },
+          "35%": {
+            transform: "scale(0)",
+          },
+        },
       },
       animation: {
         animate: "animate 1.3s ease-in-out infinite",

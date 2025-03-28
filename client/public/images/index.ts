@@ -29,7 +29,7 @@ import startFromCratch from "./utilities/start-from-scratch.png";
 import mainnet from "./network/mainnet.png";
 import preprod from "./network/preprod.png";
 import preview from "./network/preview.png";
-import about from "./common/about.jpg"
+import about from "./common/about.jpg";
 
 export const founderImage = {
   son: son,
@@ -53,7 +53,7 @@ export const appImage = {
   startFromCratch: startFromCratch,
   fastCollection: fastCollection,
   api: api,
-  about: about
+  about: about,
 } as const;
 
 export const walletImage = {
@@ -72,9 +72,8 @@ export const bannerImage = {
   faq: faq,
 } as const;
 
-
 export const networkImage = {
   mainnet: mainnet,
-    preprod: preprod,
-    preview: preview,
+  preprod: preprod,
+  preview: preview,
 } as const;

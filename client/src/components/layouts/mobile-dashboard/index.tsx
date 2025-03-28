@@ -1,4 +1,4 @@
-import BottomTab from "./bottom-tab";
+import BottomTab from "@/components/bottom-tab";
 import { Navbar } from "../../providers/navbar";
 
 export default function MobileDashboardlLayout({ children }: { children: React.ReactNode }) {
