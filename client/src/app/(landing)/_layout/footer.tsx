@@ -67,7 +67,7 @@ const Footer = function ({ className = "" }: { className?: string }) {
               <li className="mt-[25px] max-md:mt-2">
                 <Link
                   className="cursor-pointer text-[15px] leading-[20px] text-gray-400 max-md:text-[12px]"
-                  href={routes.document.redirect}
+                  href={routes.login.redirect}
                   target="_blank"
                 >
                   Documentation
@@ -85,7 +85,7 @@ const Footer = function ({ className = "" }: { className?: string }) {
               <li className={"mt-[25px] max-md:mt-2"}>
                 <Link
                   className="cursor-pointer text-[15px] leading-[20px] text-gray-400 max-md:text-[12px]"
-                  href={routes.document.redirect}
+                  href={routes.login.redirect}
                   target="_blank"
                 >
                   User guide

@@ -10,7 +10,7 @@ export default function UtilitiesPage() {
         <div className="mt-2 grid  gap-4 grid-cols-3 max-md:grid-cols-1">
           <Link
             href={routes.utilities.children.collection.redirect}
-            className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800"
+            className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md"
           >
             <Card className="h-full">
               <AspectRatio ratio={5 / 3} className="bg-muted">
@@ -23,10 +23,7 @@ export default function UtilitiesPage() {
             </Card>
           </Link>
 
-          <Link
-            href={routes.utilities.children.storage.redirect}
-            className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800"
-          >
+          <Link href={routes.utilities.children.storage.redirect} className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md">
             <Card className="h-full">
               <AspectRatio ratio={5 / 3} className="bg-muted">
                 <Images.storegae className="h-full w-full rounded-t-lg object-cover" />
@@ -39,7 +36,7 @@ export default function UtilitiesPage() {
           </Link>
           <Link
             href={routes.utilities.children.fastCollection.redirect}
-            className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800"
+            className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md"
           >
             <Card className="h-full">
               <AspectRatio ratio={5 / 3} className="bg-muted">

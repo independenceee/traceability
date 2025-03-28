@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import { Sidebar } from "../../sidebar";
+import { Sidebar } from "./sidebar";
 import { Navbar } from "./navbar";
 
 export default function DesktopDashboardlLayout({ children }: { children: React.ReactNode }) {

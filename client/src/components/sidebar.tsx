@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { cn } from "@/utils";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import { SidebarToggle } from "./layouts/desktop-dashboard/sidebar/sidebar-toggle";
-import { MenuList } from "./layouts/desktop-dashboard/sidebar/menu-list";
+import { SidebarToggle } from "./sidebar-toggle";
+import { MenuList } from "./menu-list";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { appImage } from "@/public/images";

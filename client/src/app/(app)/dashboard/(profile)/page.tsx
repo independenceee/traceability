@@ -103,8 +103,8 @@ export default function ProfilePage() {
         </div>
         <section>
           {loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {Array.from({ length: 9 }).map((_, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+              {Array.from({ length: 12 }).map((_, index) => (
                 <AssetCardSkeleton key={index} />
               ))}
             </div>
@@ -131,10 +131,10 @@ export default function ProfilePage() {
               <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
             </>
           ) : !isLoading && totalUserAssets < 1 ? (
-            <div className="h-[60vh] w-full space-y-4 rounded-lg p-4">
-              <Card className="w-full rounded-lg border ">
+            <div className="h-[60vh] w-full space-y-4 rounded-lg py-4">
+              <Card className="w-full rounded-lg border">
                 <CardHeader className="pt-8">
-                  <CardTitle className="text-2xl font-medium text-white text-center">You don't have any cip68 NFTs</CardTitle>
+                  <CardTitle className="text-2xl font-medium text-white text-center">You don't have any product</CardTitle>
                 </CardHeader>
 
                 <CardContent className="flex flex-col items-center gap-6 pb-8">

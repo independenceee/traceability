@@ -4,7 +4,7 @@ import { getAppStatistic } from "@/services/blockchain/get-app-statistic";
 import StatisticItem from "./_components/statistic-item";
 import Title from "@/components/title";
 import Feature from "./_components/feature-section";
-import { founderData } from "./_data/founders";
+import { founderData } from "../../../constants/founders";
 import Founder from "./_components/founder-section";
 import { routes } from "@/constants/routes";
 
@@ -95,25 +95,18 @@ export default async function LandingPage() {
         <aside className="mx-auto my-0 flex w-full max-w-[1200px] flex-col gap-2">
           <div className="flex w-full gap-7 max-sm:flex-col">
             <div className='m relative aspect-video w-[60%] rounded-3xl before:absolute before:left-8 before:top-8 before:h-full before:w-full before:rounded-3xl before:bg-slate-900 before:shadow-xl before:content-[""] max-sm:w-full'>
-              <iframe
-                className="absolute inset-0 z-10 block h-full w-full rounded-xl"
-                src="https://www.youtube.com/embed/_GrbIRoT3mU"
-                title="Open source dynamic assets (Token/NFT) generator (CIP68)"
-                frameBorder={"none"}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              ></iframe>
+              <Image className="absolute inset-0 z-10 block h-full w-full rounded-xl" src={appImage.about} alt=""></Image>
             </div>
             <div className="z-10 flex w-[40%] flex-col items-start gap-[15px] max-md:gap-3 max-sm:w-full">
-              <h2 className="text-left text-[25px]  font-bold max-md:text-xl">About CIP68 Generator</h2>
-              <p className="mb-1 text-[20px] font-normal max-md:text-lg">Open source dynamic assets (Token/NFT) generator (CIP68)</p>
+              <h2 className="text-left text-[25px]  font-bold max-md:text-xl">About Traceability</h2>
+              <p className="mb-1 text-[20px] font-normal max-md:text-lg">Open-Source Transparency for Supply Chains</p>
               <span className={"text-left leading-[1.8] max-md:text-base"}>
-                Open source dynamic assets (Token/NFT) generator (CIP68) CIP68 Generator is a tool designed to simplify the creation, management, and
-                burning of CIP68-compliant native assets on the Cardano platform. It provides an easy-to-use interface for non-technical users to
-                interact with these assets while also offering open-source code for developers to integrate and deploy applications faster and more
-                efficiently.
+                Supply Chain Traceability Generator: Simplifying Asset Management on Blockchain, Open-Source Transparency for Supply Chains, Simplify
+                Blockchain-Based Supply Chain Tracking. Supply Chain Traceability Generator: Simplifying Asset Management on Blockchain, Open-Source
+                Transparency for Supply Chains, Simplify Blockchain-Based Supply Chain Tracking. Supply Chain Traceability Generator: Simplifying
               </span>
               <Link href="https://cips.cardano.org/cip/CIP-68" target="_blank">
-                <Button className={"w-full px-8 py-6"}>Learn More Cip68</Button>
+                <Button className={"w-full px-8 py-6"}>Learn More Traceability</Button>
               </Link>
             </div>
           </div>
@@ -144,16 +137,17 @@ export default async function LandingPage() {
             </div>
             <div className="flex-1">
               <h2 className="text-[40px] leading-[50px] max-sm:text-[22px] max-md:text-[20px]">
-                Stay Updated with<span className="pl-4 text-[#ccc]">CIP68 Generator</span>
+                Stay Updated with<span className="pl-4 text-[#ccc]">Traceability</span>
               </h2>
               <p className="mb-7 mt-4 text-gray-400 max-sm:text-[12px] max-md:mt-1">
-                Be the first to stay updated on the latest releases, exciting new features, and exclusive updates.
+                Supply Chain Traceability Generator: Simplifying Asset Management on Blockchain, Open-Source Transparency for Supply Chains, Simplify
+                Blockchain-Based Supply Chain Tracking.
               </p>
 
-              <Link href="https://github.com/cardano2vn/cip68generator" target="_blank">
-                <Button variant={"outline"} className="flex h-[45px] items-center gap-2 rounded-md max-md:text-[12px]">
-                  <span>⭐ Star us on GitHub</span>
-                  {/* <ArrowRight /> */}
+              <Link href="https://github.com/indepedenceee/traceability" target="_blank">
+                <Button className="flex h-[45px] items-center gap-2 rounded-md max-md:text-[12px]">
+                  <span>Star us on GitHub</span>
+                  <ArrowRight />
                 </Button>
               </Link>
             </div>

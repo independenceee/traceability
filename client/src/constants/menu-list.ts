@@ -13,7 +13,7 @@ export const landingMenu: NavItem[] = [
     disabled: false,
   },
   {
-    title: "Mint",
+    title: "Products",
     href: routes.mint.redirect,
     icon: "imagePlus",
     disabled: false,
@@ -26,7 +26,7 @@ export const landingMenu: NavItem[] = [
   },
   {
     title: "Documentation",
-    href: routes.document.redirect,
+    href: routes.utilities.redirect,
     icon: "bookText",
     disabled: true,
   },
@@ -40,7 +40,7 @@ export const mainMenu: NavItem[] = [
     disabled: false,
   },
   {
-    title: "Mint",
+    title: "Products",
     href: routes.mint.redirect,
     icon: "imagePlus",
     disabled: false,
@@ -53,7 +53,25 @@ export const mainMenu: NavItem[] = [
   },
   {
     title: "Documentation",
-    href: routes.document.redirect,
+    href: routes.utilities.redirect,
+    icon: "bookText",
+    disabled: true,
+  },
+  {
+    title: "Documentation",
+    href: routes.utilities.redirect,
+    icon: "bookText",
+    disabled: true,
+  },
+  {
+    title: "Documentation",
+    href: routes.utilities.redirect,
+    icon: "bookText",
+    disabled: true,
+  },
+  {
+    title: "Documentation",
+    href: routes.utilities.redirect,
     icon: "bookText",
     disabled: true,
   },

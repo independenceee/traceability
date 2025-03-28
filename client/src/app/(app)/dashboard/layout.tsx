@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/app/(loading)/loading";
-import DesktopDashboardLayout from "@/components/layouts/desktop-dashboard";
+import DesktopDashboardLayout from "@/components";
 import { useSession } from "next-auth/react";
 import { PropsWithChildren } from "react";
 import { redirect } from "next/navigation";

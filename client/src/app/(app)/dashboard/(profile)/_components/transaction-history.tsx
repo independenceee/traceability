@@ -11,6 +11,9 @@ import { useState } from "react";
 import { getHistoryMetadata } from "@/services/blockchain/getHistoryMetadata";
 import ReactDiffViewer from "react-diff-viewer";
 import { Button } from "@/components/ui/button";
+import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component";
+import "react-vertical-timeline-component/style.min.css";
+import Timeline from "@/components/timeline";
 
 export default function TransactionHistory() {
   const { assetTxHistory, unit, txCurrentPage, txTotalPages, setTxCurrentPage } = useUnitContext();
@@ -56,12 +59,7 @@ export default function TransactionHistory() {
         </DialogHeader>
         <DialogContent className=" max-w-[80vw] w-screen h-[80vh] p-0">
           <div className="rounded-xl p-10">
-            <ReactDiffViewer
-              oldValue={JSON.stringify(dialog.oldMetadata, null, 2)}
-              newValue={JSON.stringify(dialog.newMetadata, null, 2)}
-              splitView
-              useDarkTheme
-            />
+            <Timeline data={[dialog.oldMetadata, dialog.newMetadata]} />
           </div>
         </DialogContent>
       </Dialog>
