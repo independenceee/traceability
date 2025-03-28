@@ -1,34 +1,42 @@
 "use client";
 
-import { isNil } from "lodash";
+import { isEmpty, isNil } from "lodash";
+import { signOut, useSession } from "next-auth/react";
 import { PropsWithChildren, useEffect, useState } from "react";
-import { useWallet, WalletStoreType } from "~/hooks/use-wallet";
-import { BrowserWallet, MeshWallet, Wallet } from "@meshsdk/core";
-
-function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-        return parts.pop()?.split(";").shift() || null;
-    }
-    return null;
-}
+import { useWallet, WalletStoreType } from "@/hooks/use-wallet";
+import { BrowserWallet, Wallet } from "@meshsdk/core";
 
 export default function BlockchainProvider({ children }: PropsWithChildren) {
-    const { connectWallet, wallet, browserWallet, address }: WalletStoreType =
-        useWallet();
+  const { signIn, wallet, disconnect, browserWallet, address }: WalletStoreType = useWallet();
+  const { data: session, status } = useSession();
 
-    useEffect(() => {
-        (async () => {
-            if (isNil(wallet)) {
-                const browserWallet = getCookie("browserWallet") as unknown as
-                    | BrowserWallet
-                    | MeshWallet;
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  useEffect(() => {
+    async function get() {
+      setWallets(await BrowserWallet.getAvailableWallets());
+    }
+    get();
+  }, []);
 
-                // connectWallet(wallet, "interln");
-            }
-        })();
-    }, [ wallet, browserWallet, address]);
+  useEffect(() => {
+    (async () => {
+      if (isEmpty(wallets)) {
+        return;
+      }
+      if (isNil(session) || status === "unauthenticated") {
+        disconnect();
+        return;
+      }
+      if (isNil(wallet)) {
+        const walletConnect = session?.user ? wallets.find((w) => w.name.toLocaleLowerCase() === session.user?.wallet?.toLocaleLowerCase()) : null;
+        if (!walletConnect) {
+          await signOut();
+          return;
+        }
+        signIn(session, walletConnect);
+      }
+    })();
+  }, [disconnect, session, signIn, status, wallet, wallets, browserWallet, address]);
 
-    return children;
+  return <>{children}</>;
 }

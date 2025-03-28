@@ -1,0 +1,70 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(cuid())
+  address    String       @unique @map("address")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  Collection Collection[]
+  Media      Media[]
+
+  @@map("user")
+}
+
+model WalletNonce {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  address   String   @unique @map("address")
+  nonce     String
+
+  @@map("wallet_nonce")
+}
+
+model Collection {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  userId      String     @map("user_id")
+  name        String     @map("name")
+  thumbnail   String?    @map("thumbnail")
+  description String?    @map("description")
+  user        User       @relation(fields: [userId], references: [id])
+  Metadata    Metadata[]
+
+  @@map("collection")
+}
+
+model Metadata {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  collectionId String     @map("collection_id")
+  assetName    String?    @map("asset_name")
+  content      String     @map("content")
+  nftReference String[]   @map("nft_reference")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@map("metadata")
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  name      String
+  type      String
+  url       String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("media")
+}

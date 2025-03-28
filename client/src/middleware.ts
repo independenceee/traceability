@@ -1,21 +1,10 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+// import { auth } from "./lib/auth";
 
-export async function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    const cookieStore = cookies();
-    const browserWallet = (await cookieStore).get("browserWallet")?.value;
-    if (!browserWallet) {
-        const redirectUrl = new URL("/login", request.url);
-        redirectUrl.searchParams.set("callbackUrl", pathname);
-        redirectUrl.searchParams.set("message", "");
-        return NextResponse.redirect(redirectUrl);
-    } else {
-        return NextResponse.next();
-    }
+export async function middleware() {
+  // const session = await auth();
+  // return;
 }
 
 export const config = {
-    matcher: "/dashboard/:path*",
+  matcher: "/dashboard/:path*",
 };

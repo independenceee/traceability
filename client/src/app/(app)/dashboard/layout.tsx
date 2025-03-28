@@ -1,29 +1,25 @@
 "use client";
 
-// import Loading from "~/app/(loading)/loading";
-// import { useSession } from "next-auth/react";
+import Loading from "@/app/(loading)/loading";
+import DesktopDashboardLayout from "@/components/layouts/desktop-dashboard";
+import { useSession } from "next-auth/react";
 import { PropsWithChildren } from "react";
-// import { redirect } from "next/navigation";
-import { Menu } from "~/components/layout/menu";
-import { cn } from "~/lib/utils";
-import { useSidebarToggle } from "~/hooks/use-sidebar-toggle";
-import Navlink from "~/components/layout/navlink";
+import { redirect } from "next/navigation";
 
 export default function DashboardLayout({ children }: Readonly<PropsWithChildren>) {
-    const sidebar = useSidebarToggle();
-    return (
-        <main>
-            <Menu />
-            <main
-                className={cn(
-                    "flex min-h-[calc(100vh_-_56px)] justify-center transition-[margin-left] duration-300 ease-in-out",
-                    sidebar?.isOpen === false ? "lg:ml-[73px]" : "lg:ml-[300px]",
-                )}
-            >
-                <Navlink />
+  const session = useSession();
 
-                <div className="container mt-20 px-4">{children}</div>
-            </main>
-        </main>
-    );
+  if (session.status === "loading") {
+    return <Loading />;
+  }
+
+  if (session.status === "unauthenticated") {
+    redirect("/login");
+  }
+
+  return (
+    <>
+      <DesktopDashboardLayout>{children}</DesktopDashboardLayout>
+    </>
+  );
 }

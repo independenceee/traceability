@@ -1,18 +1,25 @@
 "use client";
 
-import React, { PropsWithChildren, Suspense } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Loading from "~/app/(loading)/loading";
+import React from "react";
+import QueryClientProvider from "./query";
+import ErrorClientProvider from "./error";
+import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider, SessionProviderProps } from "next-auth/react";
+import BlockchainProvider from "./blockchain";
 
-type Props = PropsWithChildren;
-
-const Provider = function ({ children }: Props) {
-    const queryClient = new QueryClient();
-    return (
-        <Suspense fallback={<Loading />}>
-            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-        </Suspense>
-    );
-};
-
-export default Provider;
+export default function AppProviders({ children, session }: { children: React.ReactNode; session: SessionProviderProps["session"] }) {
+  return (
+    <>
+      {/* <Suspense fallback={<Loading />}> */}
+      <Toaster />
+      <ErrorClientProvider>
+        <QueryClientProvider>
+          <SessionProvider session={session}>
+            <BlockchainProvider>{children}</BlockchainProvider>
+          </SessionProvider>
+        </QueryClientProvider>
+      </ErrorClientProvider>
+      {/* </Suspense> */}
+    </>
+  );
+}

@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
+import ProfileProvider from "@/contexts/profile";
 
 export default function Layout({ children }: Readonly<PropsWithChildren>) {
-    return <main>{children}</main>;
+  return <ProfileProvider>{children}</ProfileProvider>;
 }
