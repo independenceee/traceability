@@ -1,6 +1,6 @@
-import { Controller } from '@nestjs/common';
+import { Controller } from "@nestjs/common";
 
-@Controller('koios')
+@Controller("koios")
 export class KoiosController {
     constructor() {}
 }

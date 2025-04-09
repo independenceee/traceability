@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -13,63 +8,261 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 1. User - Người dùng hệ thống
 model User {
-  id         String       @id @default(cuid())
-  address    String       @unique @map(name: "address")
-  createdAt  DateTime     @default(now()) @map(name: "created_at")
-  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
-  Media      Media[]
-  Collection Collection[]
+  id           String         @id @default(cuid())
+  address      String         @unique @map("address") // Địa chỉ ví Cardano
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  Collection   Collection[]
+  Media        Media[]
+  WalletNonce  WalletNonce?
+  Product      Product[] // Người dùng sở hữu hoặc tạo NFT
+  Subscription Subscription[]
+  Payment      Payment[]
+  Feedback     Feedback[]
 
-  @@map(name: "user")
+  @@map("user")
 }
 
+// 2. WalletNonce - Xác thực ví
 model WalletNonce {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  address   String   @unique @map(name: "address")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  address   String   @unique @map("address") // Địa chỉ ví Cardano
   nonce     String
+  user      User?    @relation(fields: [address], references: [address])
 
-  @@map(name: "wallet_nonce")
+  @@map("wallet_nonce")
 }
 
+// 3. Collection - Bộ sưu tập NFT
 model Collection {
   id          String     @id @default(cuid())
-  createdAt   DateTime   @default(now()) @map(name: "created_at")
-  updatedAt   DateTime   @updatedAt @map(name: "updated_at")
-  userId      String     @map(name: "user_id")
-  name        String     @map(name: "name")
-  thumbnail   String?    @map(name: "thumbnail")
-  description String?    @map(name: "description")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  userId      String     @map("user_id")
+  name        String     @map("name")
+  thumbnail   String?    @map("thumbnail")
+  description String?    @map("description")
   user        User       @relation(fields: [userId], references: [id])
   Metadata    Metadata[]
+  Product     Product[] // Bộ sưu tập chứa các NFT
 
-  @@map(name: "collection")
+  @@map("collection")
 }
 
+// 4. Metadata - Siêu dữ liệu của NFT
 model Metadata {
   id           String     @id @default(cuid())
-  createdAt    DateTime   @default(now()) @map(name: "created_at")
-  updatedAt    DateTime   @updatedAt @map(name: "updated_at")
-  collectionId String     @map(name: "collection_id")
-  assetName    String?    @map(name: "asset_name")
-  content      String     @map(name: "content")
-  nftReference String[]   @map(name: "nft_reference")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  collectionId String     @map("collection_id")
+  assetName    String?    @map("asset_name") // Tên tài sản NFT
+  content      String     @map("content") // JSON hoặc URL siêu dữ liệu
+  nftReference String[]   @map("nft_reference") // Tham chiếu blockchain
   collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
 
-  @@map(name: "metadata")
+  @@map("metadata")
 }
 
+// 5. Media - Tài liệu đa phương tiện
 model Media {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  userId    String   @map(name: "user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
   name      String
   type      String
   url       String   @unique
   user      User     @relation(fields: [userId], references: [id])
 
-  @@map(name: "media")
+  @@map("media")
+}
+
+// 6. Product - NFT với Policy ID và Asset Name
+model Product {
+  id                String              @id @default(cuid())
+  collectionId      String              @map("collection_id")
+  userId            String              @map("user_id")
+  policyId          String              @map("policy_id") // Policy ID của NFT (Cardano)
+  assetName         String              @map("asset_name") // Asset Name của NFT
+  name              String // Tên hiển thị của NFT
+  historyHash       String?             @map("history_hash") // Hash lịch sử trên blockchain
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  collection        Collection          @relation(fields: [collectionId], references: [id])
+  user              User                @relation(fields: [userId], references: [id])
+  Document          Document[]
+  ProductionProcess ProductionProcess[] // Quá trình mint NFT
+  WarehouseStorage  WarehouseStorage[] // Lưu trữ NFT (nếu áp dụng)
+  Feedback          Feedback[]
+  Certification     Certification[]
+
+  @@map("product")
+}
+
+// 7. Supplier - Nhà cung cấp (có thể là minter NFT)
+model Supplier {
+  id             String        @id @default(cuid())
+  name           String
+  location       String?
+  gpsCoordinates String?       @map("gps_coordinates")
+  contactInfo    String?       @map("contact_info")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  RawMaterial    RawMaterial[]
+
+  @@map("supplier")
+}
+
+// 8. RawMaterial - Nguyên liệu thô (có thể là dữ liệu đầu vào cho NFT)
+model RawMaterial {
+  id          String    @id @default(cuid())
+  supplierId  String    @map("supplier_id")
+  name        String
+  harvestDate DateTime? @map("harvest_date")
+  quantity    Float     @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  supplier    Supplier  @relation(fields: [supplierId], references: [id])
+
+  @@map("raw_material")
+}
+
+// 9. Document - Tài liệu bổ sung
+model Document {
+  id        String   @id @default(cuid())
+  productId String   @map("product_id")
+  docType   String   @map("doc_type")
+  url       String   @unique
+  hash      String?  @map("hash") // Hash lưu trên blockchain
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("document")
+}
+
+// 10. ServicePlan - Gói dịch vụ hàng tháng
+model ServicePlan {
+  id           String         @id @default(cuid())
+  name         String // Tên gói
+  description  String?        @map("description")
+  price        Float // Giá mỗi tháng (ADA)
+  duration     Int // Thời gian (ngày, ví dụ: 30)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  Subscription Subscription[]
+
+  @@map("service_plan")
+}
+
+// 11. Subscription - Đăng ký dịch vụ
+model Subscription {
+  id            String      @id @default(cuid())
+  userId        String      @map("user_id")
+  servicePlanId String      @map("service_plan_id")
+  startDate     DateTime    @map("start_date")
+  endDate       DateTime    @map("end_date")
+  status        String      @default("active") // "active", "expired", "cancelled"
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  user          User        @relation(fields: [userId], references: [id])
+  servicePlan   ServicePlan @relation(fields: [servicePlanId], references: [id])
+  Payment       Payment[]
+
+  @@map("subscription")
+}
+
+// 12. Payment - Thanh toán qua ví (ADA)
+model Payment {
+  id             String       @id @default(cuid())
+  userId         String       @map("user_id")
+  subscriptionId String       @map("subscription_id")
+  amount         Float // Số ADA thanh toán
+  currency       String       @default("ADA") // Loại tiền
+  txHash         String       @unique @map("tx_hash") // Hash giao dịch Cardano
+  paymentDate    DateTime     @map("payment_date")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  user           User         @relation(fields: [userId], references: [id])
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+
+  @@map("payment")
+}
+
+// 13. Warehouse - Kho hàng (có thể lưu trữ metadata NFT)
+model Warehouse {
+  id               String             @id @default(cuid())
+  name             String
+  location         String?
+  capacity         Int                @default(0)
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  WarehouseStorage WarehouseStorage[]
+
+  @@map("warehouse")
+}
+
+// 14. WarehouseStorage - Lịch sử lưu kho
+model WarehouseStorage {
+  id          String    @id @default(cuid())
+  productId   String    @map("product_id")
+  warehouseId String    @map("warehouse_id")
+  entryTime   DateTime  @map("entry_time")
+  exitTime    DateTime? @map("exit_time")
+  conditions  String?   @map("conditions")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  product     Product   @relation(fields: [productId], references: [id])
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+
+  @@map("warehouse_storage")
+}
+
+// 15. ProductionProcess - Quá trình mint NFT
+model ProductionProcess {
+  id        String    @id @default(cuid())
+  productId String    @map("product_id")
+  stepName  String    @map("step_name") // Ví dụ: "Minting", "Metadata Creation"
+  startTime DateTime  @map("start_time")
+  endTime   DateTime? @map("end_time")
+  location  String?   @map("location")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("production_process")
+}
+
+// 16. Certification - Chứng nhận cho NFT
+model Certification {
+  id         String    @id @default(cuid())
+  productId  String    @map("product_id")
+  certName   String    @map("cert_name")
+  issueDate  DateTime  @map("issue_date")
+  expiryDate DateTime? @map("expiry_date")
+  certHash   String?   @map("cert_hash") // Hash trên Cardano
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  product    Product   @relation(fields: [productId], references: [id])
+
+  @@map("certification")
+}
+
+// 17. Feedback - Phản hồi từ người dùng
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
+  content   String   @map("content")
+  rating    Int      @default(0) // Điểm đánh giá (0-5)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("feedback")
 }

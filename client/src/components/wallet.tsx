@@ -25,7 +25,7 @@ type Props = {
 };
 export default function Wallet({ wallet, session }: Props) {
   const { signIn } = useWallet();
-  const [isDownload, setIsDownload] = useState<boolean>(true);
+  const [isDownload, setIsDownload] = useState<boolean>(false);
 
   useEffect(() => {
     (async function () {
@@ -35,13 +35,11 @@ export default function Wallet({ wallet, session }: Props) {
         } else {
           setIsDownload(false);
         }
-        /* eslint-disable @typescript-eslint/no-unused-vars */
       } catch (error) {
         setIsDownload(false);
       }
     })();
-    // @typescript-eslint/no-unused-vars
-  }, [wallet]);
+  }, []);
 
   const handleDownload = async () => {
     if (wallet?.downloadApi) {

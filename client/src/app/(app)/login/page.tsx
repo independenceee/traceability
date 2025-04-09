@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { appImage } from "@/public/images";
@@ -12,9 +13,9 @@ import { networks } from "@/constants/networks";
 import Network from "@/components/network";
 import Wallet from "@/components/wallet";
 import { WalletType } from "@/types";
-
-export default function SignInViewPage() {
-  const [network, setNetwork] = useState<string>("preprod");
+export const dynamic = "force-dynamic";
+export default function SignInPage() {
+  const [network, setNetwork] = useState<string>("preview");
 
   useEffect(() => {
     const networkConnection = localStorage.getItem("network");

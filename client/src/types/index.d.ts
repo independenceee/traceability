@@ -30,7 +30,7 @@ export type WalletType = {
   address?: string;
   downloadApi?: string;
   api?: () => Promise<void>;
-  checkApi?: (() => Promise<boolean>) | undefined;
+  checkApi?: () => Promise<boolean>;
 };
 
 export type UseWalletHookType = () => {
