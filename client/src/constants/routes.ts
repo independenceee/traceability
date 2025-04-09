@@ -38,4 +38,15 @@ export const routes = {
       },
     },
   },
+  suppliers: {
+    redirect: "/dashboard/suppliers",
+    children: {
+      suppliersList: {
+        redirect: "/dashboard/suppliers/list",
+      },
+      suppliersDetails: {
+        redirect: "/dashboard/suppliers/details",
+      },
+    },
+  },
 };

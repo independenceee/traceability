@@ -4,6 +4,7 @@ import { IoIosGitNetwork } from "react-icons/io";
 import { FaGithub } from "react-icons/fa";
 import { GrCatalogOption } from "react-icons/gr";
 import { AiFillApi } from "react-icons/ai";
+import { SiImprovmx } from "react-icons/si";
 
 export const landingMenu: NavItem[] = [
   {
@@ -51,30 +52,14 @@ export const mainMenu: NavItem[] = [
     icon: "circuitBoard",
     disabled: false,
   },
+
   {
-    title: "Documentation",
-    href: routes.utilities.redirect,
-    icon: "bookText",
-    disabled: true,
+    title: "Suppliers",
+    href: routes.suppliers.redirect,
+    icon: SiImprovmx,
+    disabled: false,
   },
-  {
-    title: "Documentation",
-    href: routes.utilities.redirect,
-    icon: "bookText",
-    disabled: true,
-  },
-  {
-    title: "Documentation",
-    href: routes.utilities.redirect,
-    icon: "bookText",
-    disabled: true,
-  },
-  {
-    title: "Documentation",
-    href: routes.utilities.redirect,
-    icon: "bookText",
-    disabled: true,
-  },
+  
 ];
 
 export const bottomItem: NavItem[] = [

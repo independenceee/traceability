@@ -6,31 +6,50 @@ import { Prisma } from "@prisma/client";
 export class ServiceService {
     constructor(private prisma: PrismaService) {}
 
-    create(data: Prisma.ServicePlanCreateInput) {
-        return this.prisma.servicePlan.create({
+    create(data: Prisma.ServiceCreateInput) {
+        return this.prisma.service.create({
             data,
         });
     }
 
-    update(id: string, data: Prisma.ServicePlanUpdateInput) {
-        return this.prisma.servicePlan.update({
+    update(id: string, data: Prisma.ServiceUpdateInput) {
+        return this.prisma.service.update({
             where: { id },
             data,
         });
     }
 
-    findAll() {
-        return this.prisma.servicePlan.findMany();
-    }
+    async findAll(page = 1, limit = 10) {
+        const skip = (page - 1) * limit;
+        const [data, total] = await this.prisma.$transaction([
+          this.prisma.supplier.findMany({
+            skip,
+            take: limit,
+            include: {
+              user: true,
+              Material: true,
+            },
+          }),
+          this.prisma.supplier.count(),
+        ]);
+      
+        return {
+          data,
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        };
+      }
 
     delete(id: string) {
-        return this.prisma.servicePlan.delete({
+        return this.prisma.service.delete({
             where: { id },
         });
     }
 
     findOne(id: string) {
-        return this.prisma.servicePlan.findUnique({
+        return this.prisma.service.findUnique({
             where: { id },
         });
     }

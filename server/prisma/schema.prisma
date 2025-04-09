@@ -8,7 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 1. User - Người dùng hệ thống
 model User {
   id           String         @id @default(cuid())
   address      String         @unique @map("address") // Địa chỉ ví Cardano
@@ -17,15 +16,15 @@ model User {
   Collection   Collection[]
   Media        Media[]
   WalletNonce  WalletNonce?
-  Product      Product[] // Người dùng sở hữu hoặc tạo NFT
+  Product      Product[]
   Subscription Subscription[]
   Payment      Payment[]
   Feedback     Feedback[]
+  suppliers    Supplier[]
 
   @@map("user")
 }
 
-// 2. WalletNonce - Xác thực ví
 model WalletNonce {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -37,7 +36,6 @@ model WalletNonce {
   @@map("wallet_nonce")
 }
 
-// 3. Collection - Bộ sưu tập NFT
 model Collection {
   id          String     @id @default(cuid())
   createdAt   DateTime   @default(now()) @map("created_at")
@@ -48,12 +46,11 @@ model Collection {
   description String?    @map("description")
   user        User       @relation(fields: [userId], references: [id])
   Metadata    Metadata[]
-  Product     Product[] // Bộ sưu tập chứa các NFT
+  Product     Product[] 
 
   @@map("collection")
 }
 
-// 4. Metadata - Siêu dữ liệu của NFT
 model Metadata {
   id           String     @id @default(cuid())
   createdAt    DateTime   @default(now()) @map("created_at")
@@ -67,7 +64,6 @@ model Metadata {
   @@map("metadata")
 }
 
-// 5. Media - Tài liệu đa phương tiện
 model Media {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -103,22 +99,22 @@ model Product {
   @@map("product")
 }
 
-// 7. Supplier - Nhà cung cấp (có thể là minter NFT)
 model Supplier {
-  id             String        @id @default(cuid())
+  id             String     @id @default(cuid())
   name           String
   location       String?
-  gpsCoordinates String?       @map("gps_coordinates")
-  contactInfo    String?       @map("contact_info")
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-  RawMaterial    RawMaterial[]
+  gpsCoordinates String?    @map("gps_coordinates")
+  contactInfo    String?    @map("contact_info")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  Material       Material[]
+  userId         String
+  user           User       @relation(fields: [userId], references: [id])
 
   @@map("supplier")
 }
 
-// 8. RawMaterial - Nguyên liệu thô (có thể là dữ liệu đầu vào cho NFT)
-model RawMaterial {
+model Material {
   id          String    @id @default(cuid())
   supplierId  String    @map("supplier_id")
   name        String
@@ -145,13 +141,12 @@ model Document {
   @@map("document")
 }
 
-// 10. ServicePlan - Gói dịch vụ hàng tháng
-model ServicePlan {
+model Service {
   id           String         @id @default(cuid())
-  name         String // Tên gói
+  name         String
   description  String?        @map("description")
-  price        Float // Giá mỗi tháng (ADA)
-  duration     Int // Thời gian (ngày, ví dụ: 30)
+  price        Float
+  duration     Int
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
   Subscription Subscription[]
@@ -159,18 +154,17 @@ model ServicePlan {
   @@map("service_plan")
 }
 
-// 11. Subscription - Đăng ký dịch vụ
 model Subscription {
-  id            String      @id @default(cuid())
-  userId        String      @map("user_id")
-  servicePlanId String      @map("service_plan_id")
-  startDate     DateTime    @map("start_date")
-  endDate       DateTime    @map("end_date")
-  status        String      @default("active") // "active", "expired", "cancelled"
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
-  user          User        @relation(fields: [userId], references: [id])
-  servicePlan   ServicePlan @relation(fields: [servicePlanId], references: [id])
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  servicePlanId String    @map("service_plan_id")
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime  @map("end_date")
+  status        String    @default("active") // "active", "expired", "cancelled"
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  user          User      @relation(fields: [userId], references: [id])
+  service       Service   @relation(fields: [servicePlanId], references: [id])
   Payment       Payment[]
 
   @@map("subscription")

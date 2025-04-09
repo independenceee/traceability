@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { ServiceService } from "./service.service";
 
@@ -7,12 +7,12 @@ export class ServiceController {
     constructor(private readonly serviceService: ServiceService) {}
 
     @Post()
-    create(@Body() data: Prisma.ServicePlanCreateInput) {
+    create(@Body() data: Prisma.ServiceCreateInput) {
         return this.serviceService.create(data);
     }
 
     @Put(":id")
-    update(@Param("id") id: string, @Body() data: Prisma.ServicePlanUpdateInput) {
+    update(@Param("id") id: string, @Body() data: Prisma.ServiceUpdateInput) {
         return this.serviceService.update(id, data);
     }
 
@@ -22,7 +22,9 @@ export class ServiceController {
     }
 
     @Get()
-    findAll() {
+    findAll(@Query('userId') userId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,) {
         return this.serviceService.findAll();
     }
 
