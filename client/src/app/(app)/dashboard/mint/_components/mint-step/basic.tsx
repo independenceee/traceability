@@ -6,13 +6,14 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { toast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/use-wallet";
 import { isNil } from "lodash";
 import { parseError } from "@/utils/error/parse-error";
+import { Card } from "@/components/ui/card";
 
 const nftFormSchema = z.object({
   assetName: z
@@ -23,10 +24,6 @@ const nftFormSchema = z.object({
     .max(30, {
       message: "Name must not be longer than 30 characters.",
     }),
-  // .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
-  //   message: "Name must start with a letter and can only contain letters, numbers, and underscores.",
-  // }),
-
   assetQuantity: z.string().refine(
     (val) => {
       const parsedValue = parseInt(val, 10);
@@ -88,27 +85,27 @@ export default function BasicStep({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="py-8 px-10 m-auto flex flex-col">
-          <div className="rounded-md border border-dashed">
+        <div className="py-8 m-auto flex gap-4">
+          <Card className="h-full flex-[2]">
             <div className="space-y-8">
               <div className="relative flex-col items-center justify-center">
-                <div className="lg:p-8">
+                <div className="lg:p-4">
                   <div className="mx-auto flex w-full flex-col  space-y-6">
                     <div className="flex flex-col space-y-2 text-left">
                       <h1 className="text-2xl font-semibold tracking-tight">Basic Information</h1>
                     </div>
                     <div className="space-y-6">
-                      <div className="border-none p-0 outline-none gap-2">
+                      <div className="border-none p-0 outline-none gap-2 flex flex-col">
                         <FormField
                           control={form.control}
                           name="assetName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Asset Name</FormLabel>
+                              <FormLabel>Product Name</FormLabel>
                               <FormControl>
                                 <Input placeholder="Enter a Name" {...field} />
                               </FormControl>
-
+                              <FormDescription>Provide the name of the product.</FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -118,29 +115,29 @@ export default function BasicStep({
                           name="assetQuantity"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Asset Quantity</FormLabel>
+                              <FormLabel>Product Quantity</FormLabel>
                               <FormControl>
                                 <Input type="number" {...field} />
                               </FormControl>
+                              <FormDescription>Provide the quantity of the product.</FormDescription>
 
                               <FormMessage />
                             </FormItem>
                           )}
                         />
+                        <div className="flex items-center justify-end gap-6 space-x-2 pt-6">
+                          <Button className="w-full self-stretch" type="submit">
+                            Next
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="fixed right-0 bottom-0 z-10 max-h-16 w-full bg-section">
-            <div className="mx-4 flex h-16 items-center sm:mx-8">
-              <div className="flex flex-1 items-center justify-end space-x-2">
-                <Button type="submit">Next</Button>
-              </div>
-            </div>
-          </div>
+          </Card>
+          <Card className="flex-[3]"></Card>
         </div>
       </form>
     </Form>

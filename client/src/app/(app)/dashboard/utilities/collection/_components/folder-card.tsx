@@ -122,7 +122,7 @@ export default function FolderCard({ collection }: { collection: Collection }) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-32">
                     <DropdownMenuItem onClick={() => setOpenRenameInput(true)}>
-                      <span>Change Name</span>
+                      <span>Update</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setDialogDelete(true)}>
                       <span>Delete</span>

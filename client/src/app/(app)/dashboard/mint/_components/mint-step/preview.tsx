@@ -39,13 +39,13 @@ export default function PreviewStep({
   }, [address]);
 
   return (
-    <div className="h-full py-8 px-10 m-auto flex flex-col">
-      <div className="rounded-md border border-dashed p-4">
+    <div className="h-full py-8  m-auto flex flex-col">
+      <div className="rounded-md">
         <div className="w-full flex flex-wrap gap-5">
           <div className="flex flex-row gap-6 w-full">
             {/* NFT Image */}
-            <div className="w-full h-full md:w-1/2">
-              <AspectRatio ratio={4 / 4}>
+            <Card className="w-full h-full md:w-1/2 flex">
+              <AspectRatio ratio={4 / 4} className="justify-items-start">
                 <FileDisplay
                   src={imgSrc}
                   alt={"image"}
@@ -54,7 +54,7 @@ export default function PreviewStep({
                   className="h-auto w-full rounded-lg border object-contain"
                 />
               </AspectRatio>
-            </div>
+            </Card>
 
             {/* NFT Details */}
             <Card className="w-full h-full md:w-1/2 bg-card ">
@@ -99,15 +99,18 @@ export default function PreviewStep({
               </div>
             </Card>
           </div>
-        </div>
-      </div>
-      <div className="fixed right-0 bottom-0 z-10 max-h-16 w-full bg-section">
-        <div className="mx-4 flex h-16 items-center sm:mx-8">
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            <Button variant="secondary" onClick={stepper.prev} disabled={stepper.isFirst}>
-              Back
-            </Button>
-            <Button onClick={startMinting}>Next</Button>
+
+          <div className=" z-10 max-h-16 w-full ">
+            <div className="ml-4 flex h-16 items-center">
+              <div className="flex flex-1 items-center justify-end space-x-2">
+                <Button className="w-1/4" variant="secondary" onClick={stepper.prev} disabled={stepper.isFirst}>
+                  Back
+                </Button>
+                <Button className="w-1/4" onClick={startMinting}>
+                  Next
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

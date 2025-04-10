@@ -14,8 +14,8 @@ export default function UtilitiesPage() {
                 <Images.mintOne className="h-full w-full rounded-t-lg object-cover" />
               </AspectRatio>
               <div className="flex flex-col items-center justify-start gap-3 self-stretch px-4 py-2">
-                <div className="font-semibol self-stretch text-center text-base">Mint single token</div>
-                <div className="font- self-stretch text-center text-sm text-secondary">Easily mint dynamic asset on Cardano!</div>
+                <div className="font-semibol self-stretch text-center text-base">Minting single product</div>
+                <div className="font- self-stretch text-center text-sm text-secondary">Easily mint dynamic product on Cardano!</div>
               </div>
             </Card>
           </Link>
@@ -25,8 +25,8 @@ export default function UtilitiesPage() {
                 <Images.mintMany className="h-full w-full rounded-t-lg object-cover" />
               </AspectRatio>
               <div className="flex flex-col items-center justify-start gap-3 self-stretch px-4 py-2">
-                <div className="font-semibol self-stretch text-center text-base">Mint multiple tokens</div>
-                <div className="font- self-stretch text-center text-sm text-secondary">Quickly mint multiple asset using csv file</div>
+                <div className="font-semibol self-stretch text-center text-base">Minting multiple products</div>
+                <div className="font- self-stretch text-center text-sm text-secondary">Quickly mint multiple product using csv file</div>
               </div>
             </Card>
           </Link>

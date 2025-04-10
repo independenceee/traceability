@@ -29,6 +29,7 @@ export const useJsonBuilderStore = create<IJsonBuilderStore>((set, get) => ({
           { key: "description", value: "Asset Description" },
           { key: "image", value: "ipfs://..." },
           { key: "mediaType", value: "image/png" },
+          { key: "location", value: "Ha noi - Vietnam" },
         ],
       });
     }

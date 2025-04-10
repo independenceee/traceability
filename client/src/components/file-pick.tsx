@@ -39,8 +39,8 @@ export function FilePick() {
   };
 
   return (
-    <>
-      <Button onClick={() => setDialogOpen(!dialogOpen)} variant="outline">
+    <div className="w-full self-stretch">
+      <Button className="w-full self-stretch" onClick={() => setDialogOpen(!dialogOpen)}>
         Add Image
       </Button>
       <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
@@ -93,6 +93,6 @@ export function FilePick() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
