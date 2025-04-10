@@ -40,12 +40,26 @@ export const routes = {
   },
   suppliers: {
     redirect: "/dashboard/suppliers",
+  },
+  products: {
+    redirect: "/dashboard/products",
     children: {
-      suppliersList: {
-        redirect: "/dashboard/suppliers/list",
+      create: {
+        redirect: "/dashboard/products/create",
       },
-      suppliersDetails: {
-        redirect: "/dashboard/suppliers/details",
+      edit: {
+        redirect: "/dashboard/products/edit",
+      },
+    },
+  },
+  services: {
+    redirect: "/dashboard/services",
+    children: {
+      create: {
+        redirect: "/dashboard/services/create",
+      },
+      edit: {
+        redirect: "/dashboard/services/edit",
       },
     },
   },

@@ -30,6 +30,11 @@ import mainnet from "./network/mainnet.png";
 import preprod from "./network/preprod.png";
 import preview from "./network/preview.png";
 import about from "./common/about.jpg";
+import feedback from "./common/feedback.png";
+import process from "./common/process.png";
+import document from "./common/document.png";
+import warehouse from "./common/warehouse.png";
+import certification from "./common/certification.png";
 
 export const founderImage = {
   son: son,
@@ -54,6 +59,12 @@ export const appImage = {
   fastCollection: fastCollection,
   api: api,
   about: about,
+
+  feedback: feedback,
+  process: process,
+  certification: certification,
+  document: document,
+  warehouse: warehouse,
 } as const;
 
 export const walletImage = {

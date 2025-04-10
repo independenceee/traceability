@@ -5,6 +5,8 @@ import { FaGithub } from "react-icons/fa";
 import { GrCatalogOption } from "react-icons/gr";
 import { AiFillApi } from "react-icons/ai";
 import { SiImprovmx } from "react-icons/si";
+import { FaServicestack } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
 
 export const landingMenu: NavItem[] = [
   {
@@ -40,8 +42,15 @@ export const mainMenu: NavItem[] = [
     icon: "house",
     disabled: false,
   },
+
   {
     title: "Products",
+    href: routes.products.redirect,
+    icon: AiFillProduct,
+    disabled: false,
+  },
+  {
+    title: "Mint",
     href: routes.mint.redirect,
     icon: "imagePlus",
     disabled: false,
@@ -59,7 +68,13 @@ export const mainMenu: NavItem[] = [
     icon: SiImprovmx,
     disabled: false,
   },
-  
+
+  {
+    title: "Services",
+    href: routes.services.redirect,
+    icon: FaServicestack,
+    disabled: false,
+  },
 ];
 
 export const bottomItem: NavItem[] = [
