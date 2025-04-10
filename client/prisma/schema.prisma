@@ -156,7 +156,7 @@ model Subscription {
   servicePlanId String    @map("service_plan_id")
   startDate     DateTime  @map("start_date")
   endDate       DateTime  @map("end_date")
-  status        String    @default("active") // "active", "expired", "cancelled"
+  status        String    @default("active")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   user          User      @relation(fields: [userId], references: [id])
@@ -166,7 +166,6 @@ model Subscription {
   @@map("subscription")
 }
 
-// 12. Payment - Thanh toán qua ví (ADA)
 model Payment {
   id             String       @id @default(cuid())
   userId         String       @map("user_id")
