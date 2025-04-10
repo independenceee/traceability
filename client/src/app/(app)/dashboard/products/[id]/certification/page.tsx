@@ -23,9 +23,12 @@ const FormSchema = z.object({
   issueDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Please enter a valid issue date.",
   }),
-  expiryDate: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), {
-    message: "Please enter a valid expiry date.",
-  }),
+  expiryDate: z
+    .string()
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Please enter a valid expiry date.",
+    }),
   certHash: z.string().optional(),
 });
 
@@ -86,25 +89,25 @@ export default function CertificationPage() {
   });
 
   const updateMutation = useMutation({
-      mutationFn: (data: { certificationId: string; certName: string; issueDate: Date; expiryDate?: Date; certHash?: string }) =>
-        updateCertification(data),
-      onSuccess: () => {
-        toast({
-          title: "Success",
-          description: "Certification has been updated successfully!",
-          variant: "default",
-        });
-        queryClient.invalidateQueries({ queryKey: ["getAllCertifications", productId] });
-        setEditingCertification(null);
-      },
-      onError: (error: any) => {
-        toast({
-          title: "Error",
-          description: error?.message || "Failed to update certification.",
-          variant: "destructive",
-        });
-      },
-    });
+    mutationFn: (data: { certificationId: string; certName: string; issueDate: Date; expiryDate?: Date; certHash?: string }) =>
+      updateCertification(data),
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Certification has been updated successfully!",
+        variant: "default",
+      });
+      queryClient.invalidateQueries({ queryKey: ["getAllCertifications", productId] });
+      setEditingCertification(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to update certification.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleEdit = (certification: any) => {
     setEditingCertification(certification);
@@ -126,7 +129,11 @@ export default function CertificationPage() {
     }
   };
 
-  const { data: certificationsData, isLoading, isError } = useQuery({
+  const {
+    data: certificationsData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["getAllCertifications", productId],
     queryFn: () => getAllCertifications({ productId }),
   });

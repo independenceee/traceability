@@ -20,9 +20,12 @@ const FormSchema = z.object({
   startTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Please enter a valid start time.",
   }),
-  endTime: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), {
-    message: "Please enter a valid end time.",
-  }),
+  endTime: z
+    .string()
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Please enter a valid end time.",
+    }),
   location: z.string().optional(),
 });
 
@@ -119,7 +122,11 @@ export default function ProcessPage() {
     }
   };
 
-  const { data: processesData, isLoading, isError } = useQuery({
+  const {
+    data: processesData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["getAllProductionProcesses", productId],
     queryFn: () => getAllProductionProcesses({ productId }),
   });

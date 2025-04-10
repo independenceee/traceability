@@ -4,17 +4,7 @@ import prisma from "@/lib/prisma";
 import { parseError } from "@/utils/error/parse-error";
 import { UnauthorizedException } from "@/utils/http/http-exceptions";
 
-export async function createDocument({
-  productId,
-  docType,
-  url,
-  hash,
-}: {
-  productId: string;
-  docType: string;
-  url: string;
-  hash?: string;
-}) {
+export async function createDocument({ productId, docType, url, hash }: { productId: string; docType: string; url: string; hash?: string }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -75,17 +65,7 @@ export async function deleteDocument(documentId: string) {
   }
 }
 
-export async function updateDocument({
-  documentId,
-  docType,
-  url,
-  hash,
-}: {
-  documentId: string;
-  docType?: string;
-  url?: string;
-  hash?: string;
-}) {
+export async function updateDocument({ documentId, docType, url, hash }: { documentId: string; docType?: string; url?: string; hash?: string }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;

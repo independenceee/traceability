@@ -195,7 +195,6 @@ model Warehouse {
   @@map("warehouse")
 }
 
-// 14. WarehouseStorage
 model WarehouseStorage {
   id          String    @id @default(cuid())
   productId   String    @map("product_id")

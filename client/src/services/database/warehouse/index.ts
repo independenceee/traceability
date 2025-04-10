@@ -4,15 +4,7 @@ import prisma from "@/lib/prisma";
 import { parseError } from "@/utils/error/parse-error";
 import { UnauthorizedException } from "@/utils/http/http-exceptions";
 
-export async function createWarehouse({
-  name,
-  location,
-  capacity = 0,
-}: {
-  name: string;
-  location?: string;
-  capacity?: number;
-}) {
+export async function createWarehouse({ name, location, capacity = 0 }: { name: string; location?: string; capacity?: number }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;

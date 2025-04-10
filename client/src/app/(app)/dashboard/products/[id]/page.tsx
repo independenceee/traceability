@@ -4,8 +4,7 @@ import { Card } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Images } from "@/components/images";
 import Link from "next/link";
-import { useParams  } from "next/navigation";
-
+import { useParams } from "next/navigation";
 
 export default function ProductIdPage() {
   const params = useParams();
@@ -80,6 +79,20 @@ export default function ProductIdPage() {
                 <div className="font-semibol self-stretch text-center text-base">Product Feedback</div>
                 <div className="font- self-stretch text-center text-sm text-secondary">
                   Stores customer feedback on products, including content, rating, and timestamps.
+                </div>
+              </div>
+            </Card>
+          </Link>
+
+          <Link href={`/dashboard/products/${id}/warehouse`} className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md">
+            <Card className="h-full">
+              <AspectRatio ratio={5 / 3} className="bg-muted">
+                <Images.feedback className="h-full w-full rounded-t-lg object-cover" />
+              </AspectRatio>
+              <div className="flex flex-col items-center justify-start gap-3 self-stretch px-4 py-2">
+                <div className="font-semibol self-stretch text-center text-base">Warehouse Storage</div>
+                <div className="font- self-stretch text-center text-sm text-secondary">
+                  Products being scanned into storage with sensors, QR code tracking, and climate control icons shown in a smart warehouse.
                 </div>
               </div>
             </Card>

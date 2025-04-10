@@ -7,7 +7,7 @@ import { AiFillApi } from "react-icons/ai";
 import { SiImprovmx } from "react-icons/si";
 import { FaServicestack } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
-
+import { PiWarehouseLight } from "react-icons/pi";
 export const landingMenu: NavItem[] = [
   {
     title: "Dashboard",
@@ -66,6 +66,12 @@ export const mainMenu: NavItem[] = [
     title: "Suppliers",
     href: routes.suppliers.redirect,
     icon: SiImprovmx,
+    disabled: false,
+  },
+  {
+    title: "Warehouse",
+    href: routes.warehouse.redirect,
+    icon: PiWarehouseLight,
     disabled: false,
   },
 

@@ -43,24 +43,12 @@ export const routes = {
   },
   products: {
     redirect: "/dashboard/products",
-    children: {
-      create: {
-        redirect: "/dashboard/products/create",
-      },
-      edit: {
-        redirect: "/dashboard/products/edit",
-      },
-    },
   },
   services: {
     redirect: "/dashboard/services",
-    children: {
-      create: {
-        redirect: "/dashboard/services/create",
-      },
-      edit: {
-        redirect: "/dashboard/services/edit",
-      },
-    },
+  },
+
+  warehouse: {
+    redirect: "/dashboard/warehouse",
   },
 };

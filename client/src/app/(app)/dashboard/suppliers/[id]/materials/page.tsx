@@ -84,7 +84,11 @@ export default function MaterialPage() {
     },
   });
 
-  const { data: materialsData, isLoading, isError } = useQuery({
+  const {
+    data: materialsData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["getAllMaterials", supplierId],
     queryFn: () => getAllMaterials({ supplierId }),
   });

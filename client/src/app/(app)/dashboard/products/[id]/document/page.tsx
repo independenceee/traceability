@@ -119,7 +119,11 @@ export default function DocumentPage() {
     }
   };
 
-  const { data: documentsData, isLoading, isError } = useQuery({
+  const {
+    data: documentsData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["getAllDocuments", productId],
     queryFn: () => getAllDocuments({ productId }),
   });
