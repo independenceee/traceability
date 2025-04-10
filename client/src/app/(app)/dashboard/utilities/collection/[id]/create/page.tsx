@@ -31,7 +31,7 @@ export default function MetadataStep() {
   return (
     <div className="pt-8 pb-20 px-10 m-auto flex flex-col">
       <div className="rounded-xl p-6 bg-section shadow-md flex flex-col gap-3">
-      <h1 className="text-2xl font-medium leading-7 text-center">Create Metadata</h1>
+        <h1 className="text-2xl font-medium leading-7 text-center">Create Metadata</h1>
         <div className="h-full py-8 m-auto flex w-full gap-4">
           <div className="rounded-md flex-1 pb-4">
             <JsonBuilder />

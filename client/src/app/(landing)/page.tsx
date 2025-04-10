@@ -4,8 +4,6 @@ import { getAppStatistic } from "@/services/blockchain/get-app-statistic";
 import StatisticItem from "@/components/statistic";
 import Title from "@/components/title";
 import Feature from "@/components/feature";
-import { founderData } from "@/constants/founders";
-import Founder from "@/components/founder";
 import { routes } from "@/constants/routes";
 
 import Image from "next/image";
@@ -14,6 +12,8 @@ import Header from "./_layout/header";
 import Footer from "./_layout/footer";
 import { ArrowRight } from "lucide-react";
 import features from "@/constants/features";
+import Service from "@/components/service";
+
 export default async function LandingPage() {
   const { data: statistic } = await getAppStatistic();
   return (
@@ -117,12 +117,10 @@ export default async function LandingPage() {
       {/* founder-begin */}
       <section className={"px-0 mt-[100px] max-md:mt-[50px]"}>
         <aside className="mx-auto my-0 flex w-full max-w-[1200px] flex-col gap-2">
-          <Title title="Our Team" description="The driving force behind our success" />
+          <Title title="Service Plan" description="The driving force behind our success" />
           {/* founder-begin */}
           <section className="grid grid-cols-3 content-start justify-stretch gap-8 rounded-lg max-lg:grid-cols-2 max-sm:grid-cols-1">
-            {founderData.map((founder, index) => (
-              <Founder key={index} data={founder} />
-            ))}
+            <Service />
           </section>
           {/* founder-end */}
         </aside>
