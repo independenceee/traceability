@@ -41,7 +41,7 @@ export async function createCertification({
   }
 }
 
-export async function getAllCertifications({ productId }: { productId: string }) {
+export async function getAllCertifications({ productId, page = 1, limit = 10 }: { productId: string; page?: number; limit?: number }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -50,12 +50,30 @@ export async function getAllCertifications({ productId }: { productId: string })
       throw new UnauthorizedException();
     }
 
+    // Tính toán số bản ghi cần bỏ qua (offset)
+    const offset = (page - 1) * limit;
+
+    // Lấy tổng số chứng nhận
+    const totalCertifications = await prisma.certification.count({
+      where: { productId },
+    });
+
+    // Lấy danh sách chứng nhận với phân trang
     const certifications = await prisma.certification.findMany({
       where: { productId },
       orderBy: { createdAt: "desc" },
+      skip: offset,
+      take: limit,
     });
 
-    return { result: true, message: "Get all certifications successful", data: certifications };
+    return {
+      result: true,
+      message: "Get all certifications successful",
+      data: certifications,
+      totalItem: totalCertifications,
+      totalPages: Math.ceil(totalCertifications / limit),
+      currentPage: page,
+    };
   } catch (e) {
     return { result: false, data: [], message: parseError(e) };
   }

@@ -15,6 +15,8 @@ import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Warehouse } from "@prisma/client";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Pencil, Trash2 } from "lucide-react";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -179,7 +181,7 @@ export default function WarehousePage() {
                         <FormControl>
                           <Input placeholder="Enter warehouse name" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the name of the warehouse.</FormDescription>
+                        <FormDescription>{"Provide the name of the warehouse. Example: Da Lat Cold Storage"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -193,7 +195,9 @@ export default function WarehousePage() {
                         <FormControl>
                           <Input placeholder="Enter location (optional)" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the location of the warehouse (optional).</FormDescription>
+                        <FormDescription>
+                          {"Provide the location of the warehouse (optional). Example: Phu Hoi Industrial Park, Lam Dong"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -213,7 +217,7 @@ export default function WarehousePage() {
                             onChange={(e) => field.onChange(Number(e.target.value))}
                           />
                         </FormControl>
-                        <FormDescription>Provide the capacity of the warehouse.</FormDescription>
+                        <FormDescription>{"Provide the capacity of the warehouse. Example: 1000Q"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -284,14 +288,33 @@ export default function WarehousePage() {
                           <TableCell className="border px-4 py-2">{warehouse.location || "N/A"}</TableCell>
                           <TableCell className="border px-4 py-2">{warehouse.capacity}</TableCell>
                           <TableCell className="border px-4 py-2 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(warehouse)}>
-                                Edit
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDelete(warehouse.id)}>
-                                Delete
-                              </Button>
-                            </div>
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  Actions
+                                </Button>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-40 p-2 flex flex-col gap-2 shadow-lg border rounded-md">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleEdit(warehouse)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                  <span>Edit</span>
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-red-600 border-red-600 hover:bg-red-50"
+                                  onClick={() => handleDelete(warehouse.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  <span>Delete</span>
+                                </Button>
+                              </HoverCardContent>
+                            </HoverCard>
                           </TableCell>
                         </TableRow>
                       ))}

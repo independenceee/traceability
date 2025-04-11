@@ -17,6 +17,7 @@ import { useParams } from "next/navigation";
 import { Media } from "@prisma/client";
 import { MediaPick } from "@/components/media-pick";
 import Certification from "@/components/certification";
+import Pagination from "@/components/pagination";
 
 const FormSchema = z.object({
   certName: z.string().min(2, {
@@ -37,7 +38,8 @@ const FormSchema = z.object({
 export default function CertificationPage() {
   const params = useParams();
   const productId = params.id as string;
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [deleteCertificationId, setDeleteCertificationId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -140,7 +142,14 @@ export default function CertificationPage() {
     isError,
   } = useQuery({
     queryKey: ["getAllCertifications", productId],
-    queryFn: () => getAllCertifications({ productId }),
+    queryFn: async () => {
+      const response = await getAllCertifications({ productId, page: currentPage, limit: itemsPerPage });
+      if (response.result) {
+        return { data: response.data, totalPages: response.totalPages };
+      }
+      throw new Error(response.message || "Failed to fetch certifications.");
+    },
+    staleTime: 5000,
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -177,7 +186,7 @@ export default function CertificationPage() {
     }
   }
 
-  console.log(certificationsData?.data);
+  const totalPages = certificationsData?.totalPages || 1;
 
   const addMediaField = (mediaField: Media) => {
     form.setValue("certHash", mediaField.url);
@@ -242,7 +251,9 @@ export default function CertificationPage() {
                         <FormControl>
                           <Input placeholder="Enter hash certificate (optional)." {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>{"Provide the blockchain hash of the certification (if applicable). Example: ipfs://QmZSLSNpbEBCLp9DhW8"}</FormDescription>
+                        <FormDescription>
+                          {"Provide the blockchain hash of the certification (if applicable). Example: ipfs://QmZSLSNpbEBCLp9DhW8"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -303,14 +314,19 @@ export default function CertificationPage() {
                   </div>
                 ) : (
                   <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                    {certificationsData?.data?.map((certification) => (
-                      <Certification key={certification.id} data={certification} onEdit={() => handleEdit(certification)} onDelete={() => handleDelete(certification.id)} />
-                    ))}
-                  </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                      {certificationsData?.data?.map((certification) => (
+                        <Certification
+                          key={certification.id}
+                          data={certification}
+                          onEdit={() => handleEdit(certification)}
+                          onDelete={() => handleDelete(certification.id)}
+                        />
+                      ))}
+                    </div>
 
-                  {/* <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} /> */}
-                </>
+                    <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+                  </>
                 )}
               </div>
             </Card>

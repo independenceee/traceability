@@ -21,15 +21,14 @@ export default function Certification({ data, onEdit, onDelete }: { data: Certif
         <div className="flex flex-col items-center justify-start gap-1 self-stretch px-4 py-1">
           <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{certName}</div>
           <div className="font-medium self-stretch text-center text-sm text-secondary text-ellipsis overflow-hidden whitespace-nowrap">
-          {
-    expiryDate && issueDate
-      ? Math.floor((new Date(expiryDate).getTime() - new Date(issueDate).getTime()) / (1000 * 60 * 60 * 24))
-      : "Invalid dates"
-  } days
+            {expiryDate && issueDate
+              ? Math.floor((new Date(expiryDate).getTime() - new Date(issueDate).getTime()) / (1000 * 60 * 60 * 24))
+              : "Invalid dates"}{" "}
+            days
           </div>
         </div>
         {/* Buttons for Edit and Delete */}
-        
+
         <HoverCard>
           <HoverCardTrigger asChild>
             <Button className="absolute top-1 right-1 bg-slate-400" variant="ghost" size="sm">
