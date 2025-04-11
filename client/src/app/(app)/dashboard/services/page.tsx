@@ -39,7 +39,11 @@ export default function ServicePage() {
     },
   });
 
-  const { data: servicesData, isLoading, isError } = useQuery({
+  const {
+    data: servicesData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["getAllServices"],
     queryFn: getAllServices,
   });
@@ -51,7 +55,7 @@ export default function ServicePage() {
       queryClient.invalidateQueries({ queryKey: ["getAllServices"] });
       form.reset();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to create service.", variant: "destructive" });
     },
   });
@@ -63,7 +67,7 @@ export default function ServicePage() {
       queryClient.invalidateQueries({ queryKey: ["getAllServices"] });
       setEditingService(null);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to update service.", variant: "destructive" });
     },
   });
@@ -74,7 +78,7 @@ export default function ServicePage() {
       toast({ title: "Success", description: "Service deleted successfully!", variant: "default" });
       queryClient.invalidateQueries({ queryKey: ["getAllServices"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to delete service.", variant: "destructive" });
     },
   });

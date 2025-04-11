@@ -4,17 +4,7 @@ import prisma from "@/lib/prisma";
 import { parseError } from "@/utils/error/parse-error";
 import { UnauthorizedException } from "@/utils/http/http-exceptions";
 
-export async function createService({
-  name,
-  description,
-  price,
-  duration,
-}: {
-  name: string;
-  description?: string;
-  price: number;
-  duration: number;
-}) {
+export async function createService({ name, description, price, duration }: { name: string; description?: string; price: number; duration: number }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;

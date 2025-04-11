@@ -17,7 +17,7 @@ export const landingMenu: NavItem[] = [
   },
   {
     title: "Products",
-    href: routes.mint.redirect,
+    href: routes.product.redirect,
     icon: "imagePlus",
     disabled: false,
   },

@@ -91,6 +91,17 @@ export class BlockfrostFetcher {
     }
   }
 
+  async fetchAddressesFromStakeAddress(stakeAddress: string): Promise<Array<{ address: string }>> {
+    try {
+      const { data, status } = await this._axiosInstance.get(`/accounts/${stakeAddress}/addresses`);
+
+      if (status === 200 || status == 202) return data;
+      throw parseHttpError(data);
+    } catch (error) {
+      throw parseHttpError(error);
+    }
+  }
+
   async fetchDatum(datum: string) {
     try {
       const { data, status } = await this._axiosInstance.get(`/scripts/datum/${datum}`);
