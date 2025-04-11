@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Title from "@/components/title";
+import Feature from "@/components/feature";
 import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -10,8 +11,6 @@ import Image from "next/image";
 import { appImage } from "@/public/images";
 import { ArrowRight } from "lucide-react";
 import Service from "@/components/service";
-import Header from "../(landing)/_layout/header";
-import Footer from "../(landing)/_layout/footer";
 import React from "react";
 import { create } from "zustand";
 import { AssetDetails, FilterType } from "@/types";
@@ -19,9 +18,11 @@ import { filterDefault } from "@/constants";
 import { getAssets } from "@/services/contract/getWalletsAssets";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/pagination";
-import AssetCardSkeleton from "../(app)/dashboard/(profile)/_components/asset-card-skeleton";
 import { isEmpty } from "lodash";
-import ProductCard from "../(app)/dashboard/(profile)/_components/product-card";
+import Header from "@/app/(landing)/_layout/header";
+import AssetCardSkeleton from "@/app/(app)/dashboard/(profile)/_components/asset-card-skeleton";
+import AssetCard from "@/app/(app)/dashboard/(profile)/_components/asset-card";
+import { Footer } from "@/components/footer";
 
 export type ProductStore = {
   totalUserAssets: number;
@@ -111,7 +112,7 @@ export default function ProductsPage() {
                     </Card>
                   </div>
                 ) : (
-                  data?.data.map((data, index) => <ProductCard data={data} key={index} />)
+                  data?.data.map((data, index) => <AssetCard data={data} key={index} />)
                 )}
               </div>
 
