@@ -66,7 +66,7 @@ export default function ServicePage() {
     onSuccess: () => {
       toast({ title: "Success", description: "Service updated successfully!", variant: "default" });
       queryClient.invalidateQueries({ queryKey: ["getAllServices"] });
-      setEditingService(null);
+      setEditingService(null!);
     },
     onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to update service.", variant: "destructive" });

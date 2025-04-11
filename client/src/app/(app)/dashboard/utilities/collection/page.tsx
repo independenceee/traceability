@@ -25,7 +25,7 @@ const FormSchema = z.object({
 export default function CollectionPage() {
   const [deleteCollectionId, setDeleteCollectionId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCollection, setEditingCollection] = useState<Collection>(null);
+  const [editingCollection, setEditingCollection] = useState<Collection>(null!);
 
   const queryClient = useQueryClient();
 

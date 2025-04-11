@@ -115,9 +115,9 @@ export default function SupplierPage() {
   const handleEdit = (supplier: Supplier) => {
     setEditingSupplier(supplier);
     form.setValue("name", supplier.name);
-    form.setValue("location", supplier.location);
-    form.setValue("gpsCoordinates", supplier.gpsCoordinates);
-    form.setValue("contactInfo", supplier.contactInfo);
+    form.setValue("location", supplier.location!);
+    form.setValue("gpsCoordinates", supplier.gpsCoordinates!);
+    form.setValue("contactInfo", supplier.contactInfo!);
   };
 
   const handleSave = (data: z.infer<typeof FormSchema>) => {

@@ -15,12 +15,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useParams } from "next/navigation";
-
-interface FormValues {
-  startTime: string;
-  endTime: string;
-  location: string;
-}
+import { ProductionProcess } from "@prisma/client";
 
 const FormSchema = z.object({
   startTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
@@ -113,7 +108,7 @@ export default function ProcessPage() {
     },
   });
 
-  const handleEdit = (process: FormValues) => {
+  const handleEdit = (process: ProductionProcess) => {
     setEditingProcess(process);
     form.setValue("startTime", new Date(process.startTime).toISOString().split("T")[0]);
     form.setValue("endTime", process.endTime ? new Date(process.endTime).toISOString().split("T")[0] : "");
@@ -291,7 +286,7 @@ export default function ProcessPage() {
                           <TableCell className="border px-4 py-2">{process.location || "No location provided"}</TableCell>
                           <TableCell className="border px-4 py-2 text-center">
                             <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(process)}>
+                              <Button variant="outline" size="sm" onClick={() => handleEdit(process as ProductionProcess)}>
                                 Edit
                               </Button>
                               <Button variant="destructive" size="sm" onClick={() => handleDelete(process.id)}>
