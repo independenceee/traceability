@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Warehouse } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -28,7 +29,8 @@ const FormSchema = z.object({
 export default function WarehousePage() {
   const [deleteWarehouseId, setDeleteWarehouseId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingWarehouse, setEditingWarehouse] = useState<any>(null);
+
+  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse>(null!);
 
   const queryClient = useQueryClient();
 
@@ -51,7 +53,8 @@ export default function WarehousePage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllWarehouses"] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete warehouse.",
@@ -69,9 +72,10 @@ export default function WarehousePage() {
         variant: "default",
       });
       queryClient.invalidateQueries({ queryKey: ["getAllWarehouses"] });
-      setEditingWarehouse(null);
+      setEditingWarehouse(null!);
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update warehouse.",
@@ -107,7 +111,7 @@ export default function WarehousePage() {
     setDeleteWarehouseId(null);
   };
 
-  const handleEdit = (warehouse: any) => {
+  const handleEdit = (warehouse: Warehouse) => {
     setEditingWarehouse(warehouse);
     form.setValue("name", warehouse.name);
     form.setValue("location", warehouse.location || "");

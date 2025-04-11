@@ -12,8 +12,19 @@ import { Button } from "@/components/ui/button";
 import "react-vertical-timeline-component/style.min.css";
 import Timeline from "@/components/timeline";
 
-export default function TransactionHistory({assetTxHistory, unit,setTxCurrentPage, txCurrentPage, txTotalPages}: { assetTxHistory: TxHistory[], unit: string, txCurrentPage: number, txTotalPages: number, setTxCurrentPage: (page: number) => void }) {
-
+export default function TransactionHistory({
+  assetTxHistory,
+  unit,
+  setTxCurrentPage,
+  txCurrentPage,
+  txTotalPages,
+}: {
+  assetTxHistory: TxHistory[];
+  unit: string;
+  txCurrentPage: number;
+  txTotalPages: number;
+  setTxCurrentPage: (page: number) => void;
+}) {
   const [dialog, setDialog] = useState<{
     open: boolean;
     oldMetadata: Record<string, string>;

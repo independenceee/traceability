@@ -32,12 +32,21 @@ const FormSchema = z.object({
   conditions: z.string().optional(),
 });
 
+interface Storage {
+  id: string;
+  warehouseId: string; // Adjust based on actual type
+  entryTime: string | Date;
+  exitTime?: string | Date | null; // Optional, can be null/undefined
+  conditions?: string | null; // Optional, can be null/undefined
+}
+
 export default function WarehouseStoragePage() {
   const params = useParams();
   const productId = params.id as string;
 
   const [deleteStorageId, setDeleteStorageId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingStorage, setEditingStorage] = useState<any>(null);
 
   const queryClient = useQueryClient();
@@ -67,7 +76,7 @@ export default function WarehouseStoragePage() {
       toast({ title: "Success", description: "Record deleted successfully!", variant: "default" });
       queryClient.invalidateQueries({ queryKey: ["getAllWarehouseStorage", productId] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to delete record.", variant: "destructive" });
     },
   });
@@ -79,7 +88,7 @@ export default function WarehouseStoragePage() {
       queryClient.invalidateQueries({ queryKey: ["getAllWarehouseStorage", productId] });
       setEditingStorage(null);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to update record.", variant: "destructive" });
     },
   });
@@ -89,7 +98,7 @@ export default function WarehouseStoragePage() {
     setIsDialogOpen(true);
   };
 
-  const { data: warehousesData, isLoading: isWarehousesLoading } = useQuery({
+  const { data: warehousesData } = useQuery({
     queryKey: ["getAllWarehouses"],
     queryFn: getAllWarehouses,
   });
@@ -107,7 +116,7 @@ export default function WarehouseStoragePage() {
     setDeleteStorageId(null);
   };
 
-  const handleEdit = (storage: any) => {
+  const handleEdit = (storage: Storage) => {
     setEditingStorage(storage);
     form.setValue("warehouseId", storage.warehouseId);
     form.setValue("entryTime", new Date(storage.entryTime).toISOString().split("T")[0]);
@@ -144,7 +153,7 @@ export default function WarehouseStoragePage() {
         toast({ title: "Error", description: message, variant: "destructive" });
       }
     } catch (error) {
-      toast({ title: "Error", description: "An unexpected error occurred.", variant: "destructive" });
+      toast({ title: "Error", description: error + "An unexpected error occurred." + error, variant: "destructive" });
     }
   };
 
@@ -176,7 +185,7 @@ export default function WarehouseStoragePage() {
                             >
                               Select a warehouse
                             </option>
-                            {warehousesData?.data?.map((warehouse: any) => (
+                            {warehousesData?.data?.map((warehouse) => (
                               <option
                                 className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full"
                                 key={warehouse.id}

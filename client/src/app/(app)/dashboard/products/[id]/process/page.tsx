@@ -16,6 +16,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useParams } from "next/navigation";
 
+interface FormValues {
+  startTime: string;
+  endTime: string;
+  location: string;
+}
+
 const FormSchema = z.object({
   startTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Please enter a valid start time.",
@@ -35,6 +41,7 @@ export default function ProcessPage() {
 
   const [deleteProcessId, setDeleteProcessId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingProcess, setEditingProcess] = useState<any>(null);
   const queryClient = useQueryClient();
 
@@ -75,7 +82,8 @@ export default function ProcessPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllProductionProcesses", productId] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete production process.",
@@ -95,7 +103,8 @@ export default function ProcessPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllProductionProcesses", productId] });
       setEditingProcess(null);
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update production process.",
@@ -104,7 +113,7 @@ export default function ProcessPage() {
     },
   });
 
-  const handleEdit = (process: any) => {
+  const handleEdit = (process: FormValues) => {
     setEditingProcess(process);
     form.setValue("startTime", new Date(process.startTime).toISOString().split("T")[0]);
     form.setValue("endTime", process.endTime ? new Date(process.endTime).toISOString().split("T")[0] : "");
@@ -158,7 +167,7 @@ export default function ProcessPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: error + "An unexpected error occurred.",
         variant: "destructive",
       });
     }

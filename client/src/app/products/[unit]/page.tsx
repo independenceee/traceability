@@ -18,41 +18,26 @@ import { isEmpty, isNil } from "lodash";
 import { getAssetTxHistory } from "@/services/blockchain/get-asset-tx-history";
 import { getAssetInfo } from "@/services/blockchain/getAssetInfo";
 import { useQuery } from "@tanstack/react-query";
-import useUnitStore, { UnitStore } from "@/contexts/unit/store";
+import useUnitStore from "@/contexts/unit/store";
 import { AssetDetailsWithTransactionHistory, TxHistory } from "@/types";
 import { useParams } from "next/navigation";
 import Loading from "@/app/(loading)/loading";
 import ProductHistory from "@/app/(app)/dashboard/(profile)/_components/product-history";
 import Footer from "@/app/(landing)/_layout/footer";
 
-type ProductType = UnitStore & {
-  unit: string;
-  assetTxHistory: TxHistory[];
-  isAuthor: boolean;
-  assetDetails: AssetDetailsWithTransactionHistory;
-};
-
 export default function ProductsPage() {
   const params = useParams();
   const unit = params.unit as string;
-  console.log(unit)
+  console.log(unit);
   const {
     metadataToUpdate,
     setMetadataToUpdate,
-    loading,
-    setLoading,
-    tasks,
-    updateTaskState,
-    txhash,
-    setTxHash,
+
     txCurrentPage,
     txTotalPages,
     setTxCurrentPage,
-    resetTasks,
-    quantityToBurn,
     setQuantityToBurn,
   } = useUnitStore();
-
 
   const { data: assetData, isLoading: assetLoading } = useQuery({
     queryKey: ["getAssetInfo", unit],
@@ -81,10 +66,10 @@ export default function ProductsPage() {
       setQuantityToBurn({ quantity: 1 });
     }
   }, [assetData, assetLoading]);
-  if (txLoading) return <Loading/>;
-  if (assetLoading) return <Loading/>;
+  if (txLoading) return <Loading />;
+  if (assetLoading) return <Loading />;
 
-  const { asset_name, policy_id, metadata, fingerprint, quantity } = assetData?.data || {} as AssetDetailsWithTransactionHistory;
+  const { asset_name, policy_id, metadata, fingerprint, quantity } = assetData?.data || ({} as AssetDetailsWithTransactionHistory);
 
   const assetNameString = hexToString(asset_name?.replace(/^000de140/, "")?.replace(/^000643b0/, ""));
 
@@ -162,10 +147,16 @@ export default function ProductsPage() {
                   </Card>
                 </TabsContent>
                 <TabsContent value="transaction" className="mt-4">
-                  <ProductHistory assetTxHistory={assetTxHistory?.data as TxHistory[]} unit={unit} setTxCurrentPage={setTxCurrentPage} txTotalPages={txTotalPages} txCurrentPage={txCurrentPage} />
+                  <ProductHistory
+                    assetTxHistory={assetTxHistory?.data as TxHistory[]}
+                    unit={unit}
+                    setTxCurrentPage={setTxCurrentPage}
+                    txTotalPages={txTotalPages}
+                    txCurrentPage={txCurrentPage}
+                  />
                 </TabsContent>
               </Tabs>
-            </div> 
+            </div>
           </div>
         </aside>
       </section>

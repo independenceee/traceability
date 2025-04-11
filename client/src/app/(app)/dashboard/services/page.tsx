@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Service } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, { message: "Service name must be at least 2 characters." }),
@@ -25,7 +26,7 @@ const FormSchema = z.object({
 export default function ServicePage() {
   const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingService, setEditingService] = useState<any>(null);
+  const [editingService, setEditingService] = useState<Service>(null!);
 
   const queryClient = useQueryClient();
 
@@ -101,7 +102,7 @@ export default function ServicePage() {
     setDeleteServiceId(null);
   };
 
-  const handleEdit = (service: any) => {
+  const handleEdit = (service: Service) => {
     setEditingService(service);
     form.setValue("name", service.name);
     form.setValue("description", service.description || "");

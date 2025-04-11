@@ -19,6 +19,7 @@ import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { HoverCardContent, HoverCardTrigger, HoverCard } from "@/components/ui/hover-card";
+import { Supplier } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -39,6 +40,7 @@ export default function SupplierPage() {
   const router = useRouter();
   const [deleteSupplierId, setDeleteSupplierId] = useState<string | null>(null); // Lưu ID nhà cung cấp cần xóa
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái hiển thị hộp thoại
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingSupplier, setEditingSupplier] = useState<any>(null);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -80,7 +82,8 @@ export default function SupplierPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllSuppliers"] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete supplier.",
@@ -100,7 +103,7 @@ export default function SupplierPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllSuppliers"] });
       setEditingSupplier(null);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update supplier.",
@@ -109,7 +112,7 @@ export default function SupplierPage() {
     },
   });
 
-  const handleEdit = (supplier: any) => {
+  const handleEdit = (supplier: Supplier) => {
     setEditingSupplier(supplier);
     form.setValue("name", supplier.name);
     form.setValue("location", supplier.location);
@@ -165,7 +168,7 @@ export default function SupplierPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description:  error + "An unexpected error occurred.",
         variant: "destructive",
       });
     }

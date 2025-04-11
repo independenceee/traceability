@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Loading from "@/components/loading";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { z } from "zod";
@@ -16,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import FolderCard from "./_components/folder-card";
+import { Collection } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, { message: "Collection name must be at least 2 characters." }),
@@ -25,7 +25,7 @@ const FormSchema = z.object({
 export default function CollectionPage() {
   const [deleteCollectionId, setDeleteCollectionId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCollection, setEditingCollection] = useState<any>(null);
+  const [editingCollection, setEditingCollection] = useState<Collection>(null);
 
   const queryClient = useQueryClient();
 
@@ -53,7 +53,7 @@ export default function CollectionPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllCollection"] });
       form.reset();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to create collection.", variant: "destructive" });
     },
   });
@@ -63,9 +63,9 @@ export default function CollectionPage() {
     onSuccess: () => {
       toast({ title: "Success", description: "Collection updated successfully!", variant: "default" });
       queryClient.invalidateQueries({ queryKey: ["getAllCollection"] });
-      setEditingCollection(null);
+      setEditingCollection(null!);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to update collection.", variant: "destructive" });
     },
   });
@@ -76,15 +76,10 @@ export default function CollectionPage() {
       toast({ title: "Success", description: "Collection deleted successfully!", variant: "default" });
       queryClient.invalidateQueries({ queryKey: ["getAllCollection"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ title: "Error", description: error?.message || "Failed to delete collection.", variant: "destructive" });
     },
   });
-
-  const handleDelete = (collectionId: string) => {
-    setDeleteCollectionId(collectionId);
-    setIsDialogOpen(true);
-  };
 
   const confirmDelete = () => {
     if (deleteCollectionId) {
@@ -97,12 +92,6 @@ export default function CollectionPage() {
   const cancelDelete = () => {
     setIsDialogOpen(false);
     setDeleteCollectionId(null);
-  };
-
-  const handleEdit = (collection: any) => {
-    setEditingCollection(collection);
-    form.setValue("name", collection.name);
-    form.setValue("description", collection.description || "");
   };
 
   const handleSave = (data: z.infer<typeof FormSchema>) => {

@@ -48,7 +48,7 @@ const useProductStore = create<ProductStore>((set) => ({
 const banners = [{ image: appImage.certification }, { image: appImage.collection }, { image: appImage.about }, { image: appImage.storegae }];
 
 export default function ProductsPage() {
-  const { filter, currentPage, setCurrentPage, totalPages } = useProductStore();
+  const { filter, currentPage, setCurrentPage } = useProductStore();
   const { data, isLoading } = useQuery({
     queryKey: ["getWalletAssets", filter, currentPage],
     queryFn: () => getAssets({ query: filter.query, page: currentPage, limit: 12 }),

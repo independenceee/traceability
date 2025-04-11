@@ -27,6 +27,7 @@ const FormSchema = z.object({
 export default function ProductPage() {
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -69,7 +70,8 @@ export default function ProductPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllProducts"] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete product.",
@@ -89,7 +91,8 @@ export default function ProductPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllProducts"] });
       setEditingProduct(null);
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update product.",
@@ -97,7 +100,7 @@ export default function ProductPage() {
       });
     },
   });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEdit = (product: any) => {
     setEditingProduct(product);
     form.setValue("name", product.name);
@@ -122,6 +125,7 @@ export default function ProductPage() {
     isLoading,
     isError,
   } = useQuery<{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: Array<any>;
     totalPages: number;
   }>({
@@ -158,7 +162,7 @@ export default function ProductPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: error + "An unexpected error occurred.",
         variant: "destructive",
       });
     }

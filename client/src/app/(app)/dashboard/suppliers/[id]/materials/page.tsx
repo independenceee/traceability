@@ -15,6 +15,7 @@ import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useParams } from "next/navigation";
+import { Material } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -27,14 +28,11 @@ const FormSchema = z.object({
 });
 
 export default function MaterialPage() {
-  const params = useParams();
-  const supplierId = params.id as string;
-  if (!supplierId) return null;
+  const queryClient = useQueryClient();
+
   const [deleteMaterialId, setDeleteMaterialId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingMaterial, setEditingMaterial] = useState<any>(null);
-
-  const queryClient = useQueryClient();
+  const [editingMaterial, setEditingMaterial] = useState<Material>(null!);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -43,6 +41,17 @@ export default function MaterialPage() {
       quantity: 0,
       harvestDate: "",
     },
+  });
+  const params = useParams();
+  const supplierId = params.id as string;
+
+  const {
+    data: materialsData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["getAllMaterials", supplierId],
+    queryFn: () => getAllMaterials({ supplierId }),
   });
 
   const deleteMutation = useMutation({
@@ -55,7 +64,7 @@ export default function MaterialPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllMaterials", supplierId] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete material.",
@@ -73,9 +82,9 @@ export default function MaterialPage() {
         variant: "default",
       });
       queryClient.invalidateQueries({ queryKey: ["getAllMaterials", supplierId] });
-      setEditingMaterial(null);
+      setEditingMaterial(null!);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update material.",
@@ -84,14 +93,7 @@ export default function MaterialPage() {
     },
   });
 
-  const {
-    data: materialsData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["getAllMaterials", supplierId],
-    queryFn: () => getAllMaterials({ supplierId }),
-  });
+  if (!supplierId) return null;
 
   const handleDelete = (materialId: string) => {
     setDeleteMaterialId(materialId);
@@ -111,7 +113,7 @@ export default function MaterialPage() {
     setDeleteMaterialId(null);
   };
 
-  const handleEdit = (material: any) => {
+  const handleEdit = (material: Material) => {
     setEditingMaterial(material);
     form.setValue("name", material.name);
     form.setValue("quantity", material.quantity);
@@ -156,7 +158,7 @@ export default function MaterialPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: "An unexpected error occurred." + (error as Error).message,
         variant: "destructive",
       });
     }

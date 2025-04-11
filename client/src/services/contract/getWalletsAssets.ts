@@ -1,11 +1,9 @@
 "use server";
-import { appNetworkId } from "@/constants";
-import { Cip68Contract } from "@/contract";
-import { blockfrostFetcher, blockfrostProvider, koiosFetcher } from "@/lib/cardano";
-import { AssetDetails, AssetType } from "@/types";
+import { blockfrostFetcher, koiosFetcher } from "@/lib/cardano";
+import { AssetType } from "@/types";
 import { convertToKeyValue } from "@/utils";
 import { parseError } from "@/utils/error/parse-error";
-import { hexToString, MeshWallet } from "@meshsdk/core";
+import { hexToString } from "@meshsdk/core";
 import { APP_WALLET_ADDRESS } from "../../../contract/script/constants";
 
 export async function getAssets({ query = "", page = 1, limit = 12 }: { query?: string; page?: number; limit?: number }) {
@@ -20,6 +18,7 @@ export async function getAssets({ query = "", page = 1, limit = 12 }: { query?: 
           const filteredAssetsAddress = assetsAddress.filter((asset) => asset.policy_id);
           const assetList = filteredAssetsAddress.map((asset) => [asset.policy_id, asset.asset_name]);
           const data = await koiosFetcher.fetchAssetsInfo(assetList);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return data.map((asset: any) => ({
             policy_id: asset.policy_id,
             asset_name: asset.asset_name,

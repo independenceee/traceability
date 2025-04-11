@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useJsonBuilderStore } from "@/components/store";
 import { isEmpty, isNil } from "lodash";
-import { Card } from "@/components/ui/card";
 
 export default function MetadataStep({
   stepper,

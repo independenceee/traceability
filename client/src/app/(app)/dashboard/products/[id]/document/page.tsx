@@ -32,6 +32,7 @@ export default function DocumentPage() {
 
   const [deleteDocumentId, setDeleteDocumentId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingDocument, setEditingDocument] = useState<any>(null);
   const queryClient = useQueryClient();
 
@@ -72,7 +73,8 @@ export default function DocumentPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllDocuments", productId] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete document.",
@@ -92,7 +94,8 @@ export default function DocumentPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllDocuments", productId] });
       setEditingDocument(null);
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update document.",
@@ -100,7 +103,7 @@ export default function DocumentPage() {
       });
     },
   });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEdit = (document: any) => {
     setEditingDocument(document);
     form.setValue("docType", document.docType);
@@ -155,7 +158,7 @@ export default function DocumentPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: error + "An unexpected error occurred.",
         variant: "destructive",
       });
     }

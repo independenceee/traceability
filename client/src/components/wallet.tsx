@@ -35,7 +35,7 @@ export default function Wallet({ wallet, session }: Props) {
         } else {
           setIsDownload(false);
         }
-      } catch (error) {
+      } catch (_) {
         setIsDownload(false);
       }
     })();

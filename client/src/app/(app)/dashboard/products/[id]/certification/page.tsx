@@ -38,6 +38,7 @@ export default function CertificationPage() {
 
   const [deleteCertificationId, setDeleteCertificationId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingCertification, setEditingCertification] = useState<any>(null);
   const queryClient = useQueryClient();
 
@@ -79,7 +80,8 @@ export default function CertificationPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["getAllCertifications", productId] });
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to delete certification.",
@@ -100,7 +102,8 @@ export default function CertificationPage() {
       queryClient.invalidateQueries({ queryKey: ["getAllCertifications", productId] });
       setEditingCertification(null);
     },
-    onError: (error: any) => {
+
+    onError: (error) => {
       toast({
         title: "Error",
         description: error?.message || "Failed to update certification.",
@@ -108,7 +111,7 @@ export default function CertificationPage() {
       });
     },
   });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEdit = (certification: any) => {
     setEditingCertification(certification);
     form.setValue("certName", certification.certName);
@@ -166,7 +169,7 @@ export default function CertificationPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred.",
+        description: error + " An unexpected error occurred.",
         variant: "destructive",
       });
     }

@@ -9,9 +9,7 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { getHistoryMetadata } from "@/services/blockchain/getHistoryMetadata";
-import ReactDiffViewer from "react-diff-viewer";
 import { Button } from "@/components/ui/button";
-import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import Timeline from "@/components/timeline";
 
