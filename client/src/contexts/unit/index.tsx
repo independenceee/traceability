@@ -53,6 +53,7 @@ export default function UnitProvider({ unit, children }: { unit: string; childre
 
   const updateStepper = useUpdateStepper();
   const burnStepper = useBurnStepper();
+
   const {
     metadataToUpdate,
     setMetadataToUpdate,
