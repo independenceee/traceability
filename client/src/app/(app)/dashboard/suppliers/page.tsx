@@ -168,7 +168,7 @@ export default function SupplierPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description:  error + "An unexpected error occurred.",
+        description: error + "An unexpected error occurred.",
         variant: "destructive",
       });
     }
