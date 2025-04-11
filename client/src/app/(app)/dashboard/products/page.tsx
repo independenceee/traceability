@@ -15,6 +15,8 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Pagination from "@/components/pagination";
 import Product from "@/components/product";
+import { MediaPick } from "@/components/media-pick";
+import { Media } from "@prisma/client";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -117,7 +119,13 @@ export default function ProductPage() {
         imageUrl: data.imageUrl,
         description: data.description,
       });
+      form.reset();
+      setEditingProduct(null!);
     }
+  };
+
+  const addMediaField = (mediaField: Media) => {
+    form.setValue("imageUrl", mediaField.url);
   };
 
   const {
@@ -185,7 +193,7 @@ export default function ProductPage() {
                         <FormControl>
                           <Input placeholder="Enter product name" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the name of the product.</FormDescription>
+                        <FormDescription>{"Provide the name of the product. Example: Organic A2 Cheese"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -200,7 +208,9 @@ export default function ProductPage() {
                         <FormControl>
                           <Input placeholder="Enter image URL" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the image URL of the product.</FormDescription>
+                        <FormDescription>
+                          {"Provide the image URL of the product. Example: ipfs://QmZSLSNpbEBCLp9DhW8J7bv6Jz9tm8U9LKyB2Jmv1KwHSA"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -214,20 +224,30 @@ export default function ProductPage() {
                         <FormControl>
                           <Textarea placeholder="Enter description" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide a description of the product.</FormDescription>
+                        <FormDescription>
+                          {
+                            "Provide a description of the product. Example: Rich in flavor, creamy in texture, and naturally easier to digest for many individuals, Organic A2 Cheese offers a nutritious and ethically sourced option for health-conscious consumers."
+                          }
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="flex items-center justify-end gap-6 space-x-2 pt-6">
                     {editingProduct ? (
-                      <Button className="w-full self-stretch bg-green-600" type="submit">
-                        Save
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch" type="submit">
+                          Save
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     ) : (
-                      <Button className="w-full self-stretch" type="submit">
-                        Submit
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch" type="submit">
+                          Submit
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     )}
                   </div>
                 </form>
@@ -269,7 +289,7 @@ export default function ProductPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                       {productsData?.data?.map((product) => (
                         <Product key={product.id} data={product} onEdit={() => handleEdit(product)} onDelete={() => handleDelete(product.id)} />
                       ))}

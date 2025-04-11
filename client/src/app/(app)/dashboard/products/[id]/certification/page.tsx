@@ -13,8 +13,10 @@ import { Card, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useParams } from "next/navigation";
+import { Media } from "@prisma/client";
+import { MediaPick } from "@/components/media-pick";
+import Certification from "@/components/certification";
 
 const FormSchema = z.object({
   certName: z.string().min(2, {
@@ -175,6 +177,12 @@ export default function CertificationPage() {
     }
   }
 
+  console.log(certificationsData?.data);
+
+  const addMediaField = (mediaField: Media) => {
+    form.setValue("certHash", mediaField.url);
+  };
+
   return (
     <div className="py-8 px-10 m-auto flex flex-col max-md:px-0">
       <div className="rounded-xl p-6 bg-section shadow-md flex-wrap gap-3 space-y-5">
@@ -192,7 +200,7 @@ export default function CertificationPage() {
                         <FormControl>
                           <Input placeholder="Enter certification name" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the name of the certification.</FormDescription>
+                        <FormDescription>{"Provide the name of the certification. Example: USDA Organic"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -206,7 +214,7 @@ export default function CertificationPage() {
                         <FormControl>
                           <Input type="date" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the issue date of the certification.</FormDescription>
+                        <FormDescription>{"Provide the issue date of the certification. Example: 2024-12-01T00:00:00Z"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -220,7 +228,7 @@ export default function CertificationPage() {
                         <FormControl>
                           <Input type="date" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the expiry date of the certification (optional).</FormDescription>
+                        <FormDescription>{"Provide the expiry date of the certification (optional). Example: 2024-12-01T00:00:00Z"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -232,22 +240,28 @@ export default function CertificationPage() {
                       <FormItem>
                         <FormLabel>Blockchain Hash</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter blockchain hash (optional)" {...field} className="w-full" />
+                          <Input placeholder="Enter hash certificate (optional)." {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the blockchain hash of the certification (if applicable).</FormDescription>
+                        <FormDescription>{"Provide the blockchain hash of the certification (if applicable). Example: ipfs://QmZSLSNpbEBCLp9DhW8"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="flex items-center justify-end gap-6 space-x-2 pt-6">
                     {editingCertification ? (
-                      <Button className="w-full self-stretch bg-green-600" type="submit">
-                        Save
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch " type="submit">
+                          Save
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     ) : (
-                      <Button className="w-full self-stretch" type="submit">
-                        Submit
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch" type="submit">
+                          Submit
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     )}
                   </div>
                 </form>
@@ -288,39 +302,15 @@ export default function CertificationPage() {
                     <p className="text-center text-gray-500">No certifications found.</p>
                   </div>
                 ) : (
-                  <Table className="table-auto w-full border-collapse border mt-4">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="border px-4 py-2 text-left">Certification Name</TableHead>
-                        <TableHead className="border px-4 py-2 text-left">Issue Date</TableHead>
-                        <TableHead className="border px-4 py-2 text-left">Expiry Date</TableHead>
-                        <TableHead className="border px-4 py-2 text-left">Blockchain Hash</TableHead>
-                        <TableHead className="border px-4 py-2 text-center">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {certificationsData?.data?.map((certification) => (
-                        <TableRow key={certification.id}>
-                          <TableCell className="border px-4 py-2">{certification.certName}</TableCell>
-                          <TableCell className="border px-4 py-2">{new Date(certification.issueDate).toLocaleDateString()}</TableCell>
-                          <TableCell className="border px-4 py-2">
-                            {certification.expiryDate ? new Date(certification.expiryDate).toLocaleDateString() : "No expiry date"}
-                          </TableCell>
-                          <TableCell className="border px-4 py-2">{certification.certHash || "No hash provided"}</TableCell>
-                          <TableCell className="border px-4 py-2 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(certification)}>
-                                Edit
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDelete(certification.id)}>
-                                Delete
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                    {certificationsData?.data?.map((certification) => (
+                      <Certification key={certification.id} data={certification} onEdit={() => handleEdit(certification)} onDelete={() => handleDelete(certification.id)} />
+                    ))}
+                  </div>
+
+                  {/* <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} /> */}
+                </>
                 )}
               </div>
             </Card>

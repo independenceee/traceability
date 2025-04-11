@@ -2,34 +2,34 @@ import FileDisplay from "@/components/file-display";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { Product } from "@prisma/client";
+import type { Certification } from "@prisma/client";
 import Link from "next/link";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { Pencil, Trash2 } from "lucide-react";
 import { FaBars } from "react-icons/fa";
-export default function Product({ data, onEdit, onDelete }: { data: Product; onEdit: () => void; onDelete: () => void }) {
-  const { imageUrl, description, id, name } = data;
+export default function Certification({ data, onEdit, onDelete }: { data: Certification; onEdit: () => void; onDelete: () => void }) {
+  const { certHash, expiryDate, issueDate, id, certName } = data;
 
   return (
     <div className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800">
       <Card className="h-full pb-1 relative">
         <Link href={`/dashboard/products/${id}`}>
           <AspectRatio ratio={4 / 3} className="bg-muted">
-            <FileDisplay src={imageUrl || ""} alt={"image"} type="image/png" className="h-full w-full rounded-t-lg object-cover" />
+            <FileDisplay src={certHash || ""} alt={"image"} type="image/png" className="h-full w-full rounded-t-lg object-cover" />
           </AspectRatio>
         </Link>
         <div className="flex flex-col items-center justify-start gap-1 self-stretch px-4 py-1">
-          <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{name}</div>
+          <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{certName}</div>
           <div className="font-medium self-stretch text-center text-sm text-secondary text-ellipsis overflow-hidden whitespace-nowrap">
-            {description}
+          {
+    expiryDate && issueDate
+      ? Math.floor((new Date(expiryDate).getTime() - new Date(issueDate).getTime()) / (1000 * 60 * 60 * 24))
+      : "Invalid dates"
+  } days
           </div>
         </div>
         {/* Buttons for Edit and Delete */}
-        <div className="flex justify-between items-center mt-1 px-1">
-          <Button className="w-full self-stretch" onClick={onEdit}>
-            Mint Now
-          </Button>
-        </div>
+        
         <HoverCard>
           <HoverCardTrigger asChild>
             <Button className="absolute top-1 right-1 bg-slate-400" variant="ghost" size="sm">

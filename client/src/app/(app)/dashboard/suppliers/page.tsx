@@ -191,7 +191,7 @@ export default function SupplierPage() {
                         <FormControl>
                           <Input placeholder="Enter supplier name" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the name of the supplier.</FormDescription>
+                        <FormDescription>Provide the name of the supplier. Example: Cau Dat Dairy Farm</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -206,7 +206,7 @@ export default function SupplierPage() {
                         <FormControl>
                           <Input placeholder="Enter location" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the location of the supplier.</FormDescription>
+                        <FormDescription>Provide the location of the supplier. Example: Da Lat</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -220,7 +220,7 @@ export default function SupplierPage() {
                         <FormControl>
                           <Input placeholder="Enter GPS coordinates" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the GPS coordinates of the supplier.</FormDescription>
+                        <FormDescription>Provide the GPS coordinates of the supplier. Example: 11.9386, 108.4558</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -234,7 +234,7 @@ export default function SupplierPage() {
                         <FormControl>
                           <Textarea placeholder="Enter contact information" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the contact information of the supplier.</FormDescription>
+                        <FormDescription>Provide the contact information of the supplier. Example: Phone Number 0123456789</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
