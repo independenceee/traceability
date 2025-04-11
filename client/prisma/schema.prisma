@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id           String         @id @default(cuid())
-  address      String         @unique @map("address") // Địa chỉ ví Cardano
+  address      String         @unique @map("address") 
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
   Collection   Collection[]
@@ -28,7 +28,7 @@ model WalletNonce {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  address   String   @unique @map("address") // Địa chỉ ví Cardano
+  address   String   @unique @map("address") 
   nonce     String
 
   @@map("wallet_nonce")
@@ -237,7 +237,6 @@ model Certification {
   @@map("certification")
 }
 
-// 17. Feedback - Phản hồi từ người dùng
 model Feedback {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
