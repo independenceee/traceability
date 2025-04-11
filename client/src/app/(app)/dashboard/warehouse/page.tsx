@@ -224,7 +224,7 @@ export default function WarehousePage() {
                   />
                   <div className="flex items-center justify-end gap-6 space-x-2 pt-6">
                     {editingWarehouse ? (
-                      <Button className="w-full self-stretch bg-green-600" type="submit">
+                      <Button className="w-full self-stretch" type="submit">
                         Save
                       </Button>
                     ) : (

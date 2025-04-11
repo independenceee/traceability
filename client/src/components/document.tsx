@@ -2,37 +2,28 @@ import FileDisplay from "@/components/file-display";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { Product } from "@prisma/client";
+import type { Document } from "@prisma/client";
 import Link from "next/link";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { Pencil, Trash2 } from "lucide-react";
 import { FaBars } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import { routes } from "@/constants/routes";
-export default function Product({ data, onEdit, onDelete }: { data: Product; onEdit: () => void; onDelete: () => void }) {
-  const router = useRouter();
-  const { imageUrl, description, id, name } = data;
+export default function Document({ data, onEdit, onDelete }: { data: Document; onEdit: () => void; onDelete: () => void }) {
+  const { docType, hash, url, id } = data;
 
   return (
     <div className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800">
       <Card className="h-full pb-1 relative">
-        <Link href={`/dashboard/products/${id}`}>
+        <div>
           <AspectRatio ratio={4 / 3} className="bg-muted">
-            <FileDisplay src={imageUrl || ""} alt={"image"} type="image/png" className="h-full w-full rounded-t-lg object-cover" />
+            <FileDisplay src={hash || ""} alt={"image"} type="image/png" className="h-full w-full rounded-t-lg object-cover" />
           </AspectRatio>
-        </Link>
+        </div>
         <div className="flex flex-col items-center justify-start gap-1 self-stretch px-4 py-1">
-          <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{name}</div>
-          <div className="font-medium self-stretch text-center text-sm text-secondary text-ellipsis overflow-hidden whitespace-nowrap">
-            {description}
-          </div>
+          <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{docType}</div>
+          <div className="font-medium self-stretch text-center text-sm text-secondary text-ellipsis overflow-hidden whitespace-nowrap">{url}</div>
         </div>
         {/* Buttons for Edit and Delete */}
-        <div className="flex justify-between items-center mt-1 px-1">
-          <Button className="w-full self-stretch" onClick={() => router.push(routes.mint.children.mintOne.redirect + "?product=" + id)}>
-            Mint Now
-          </Button>
-        </div>
+
         <HoverCard>
           <HoverCardTrigger asChild>
             <Button className="absolute top-1 right-1 bg-slate-400" variant="ghost" size="sm">

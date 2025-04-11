@@ -21,12 +21,13 @@ export default function Page() {
     startMinting,
     setCollectionToSave,
   } = useMintOneContext();
+  console.log("metadataTemplate", metadataTemplate);
 
   useEffect(() => {
-    if (!isNil(metadataTemplate)) {
+    if (!isNil(metadataTemplate) && metadataTemplate !== metadataToMint) {
       setMetadataToMint(metadataTemplate);
     }
-  }, [metadataTemplate, setMetadataToMint]);
+  }, [metadataTemplate, metadataToMint, setMetadataToMint]);
 
   return (
     <div className="pt-8 pb-20 px-10 m-auto flex flex-col">

@@ -13,8 +13,10 @@ import { Card, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useParams } from "next/navigation";
+import Document from "@/components/document";
+import { MediaPick } from "@/components/media-pick";
+import { Media } from "@prisma/client";
 
 const FormSchema = z.object({
   docType: z.string().min(2, {
@@ -164,6 +166,10 @@ export default function DocumentPage() {
     }
   }
 
+  const addMediaField = (mediaField: Media) => {
+    form.setValue("hash", mediaField.url);
+  };
+
   return (
     <div className="py-8 px-10 m-auto flex flex-col max-md:px-0">
       <div className="rounded-xl p-6 bg-section shadow-md flex-wrap gap-3 space-y-5">
@@ -181,7 +187,7 @@ export default function DocumentPage() {
                         <FormControl>
                           <Input placeholder="Enter document type" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the type of the document (e.g., Certificate).</FormDescription>
+                        <FormDescription>{"Provide the type of the document (e.g., Certificate). Example: specification"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -195,7 +201,7 @@ export default function DocumentPage() {
                         <FormControl>
                           <Input placeholder="Enter document URL" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the URL of the document.</FormDescription>
+                        <FormDescription>{"Provide the URL of the document. Example: https://example.com/docs/cheese_spec.pdf"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -205,24 +211,32 @@ export default function DocumentPage() {
                     name="hash"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Blockchain Hash</FormLabel>
+                        <FormLabel>Document Hash</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter blockchain hash (optional)" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the blockchain hash of the document (if applicable).</FormDescription>
+                        <FormDescription>
+                          {"Provide the blockchain hash of the document (if applicable). Example: ipfs://ssjaeuhflkajsdfassdfvt"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="flex items-center justify-end gap-6 space-x-2 pt-6">
                     {editingDocument ? (
-                      <Button className="w-full self-stretch bg-green-600" type="submit">
-                        Save
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch " type="submit">
+                          Save
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     ) : (
-                      <Button className="w-full self-stretch" type="submit">
-                        Submit
-                      </Button>
+                      <div className="flex items-center justify-end gap-2 w-full self-end">
+                        <Button className="w-full self-stretch" type="submit">
+                          Submit
+                        </Button>
+                        <MediaPick addMediaField={addMediaField} />
+                      </div>
                     )}
                   </div>
                 </form>
@@ -263,39 +277,15 @@ export default function DocumentPage() {
                     <p className="text-center text-gray-500">No documents found.</p>
                   </div>
                 ) : (
-                  <Table className="table-auto w-full border-collapse border mt-4">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="border px-4 py-2 text-left">Document Type</TableHead>
-                        <TableHead className="border px-4 py-2 text-left">URL</TableHead>
-                        <TableHead className="border px-4 py-2 text-left">Blockchain Hash</TableHead>
-                        <TableHead className="border px-4 py-2 text-center">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                       {documentsData?.data?.map((document) => (
-                        <TableRow key={document.id}>
-                          <TableCell className="border px-4 py-2">{document.docType}</TableCell>
-                          <TableCell className="border px-4 py-2">
-                            <a href={document.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                              {document.url}
-                            </a>
-                          </TableCell>
-                          <TableCell className="border px-4 py-2">{document.hash || "No hash provided"}</TableCell>
-                          <TableCell className="border px-4 py-2 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(document)}>
-                                Edit
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDelete(document.id)}>
-                                Delete
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
+                        <Document key={document.id} data={document} onEdit={() => handleEdit(document)} onDelete={() => handleDelete(document.id)} />
                       ))}
-                    </TableBody>
-                  </Table>
+                    </div>
+
+                    {/* <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} /> */}
+                  </>
                 )}
               </div>
             </Card>

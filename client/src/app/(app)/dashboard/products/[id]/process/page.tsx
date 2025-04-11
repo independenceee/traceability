@@ -16,6 +16,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useParams } from "next/navigation";
 import { ProductionProcess } from "@prisma/client";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Pencil, Trash2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
   startTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
@@ -185,7 +188,7 @@ export default function ProcessPage() {
                         <FormControl>
                           <Input type="date" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the start time of the production process.</FormDescription>
+                        <FormDescription>{"Provide the start time of the production process. Example: 2025-04-01T16:00:00Z"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -199,7 +202,9 @@ export default function ProcessPage() {
                         <FormControl>
                           <Input type="date" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the end time of the production process (optional).</FormDescription>
+                        <FormDescription>
+                          {"Provide the end time of the production process (optional). Example: 2025-04-01T16:00:00Z"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -211,9 +216,11 @@ export default function ProcessPage() {
                       <FormItem>
                         <FormLabel>Location</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter location (optional)" {...field} className="w-full" />
+                          <Textarea placeholder="Enter location (optional)" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>Provide the location of the production process (optional).</FormDescription>
+                        <FormDescription>
+                          {"Provide the location of the production process (optional). Example: Organic Dairy Facility, Da Lat"}
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -285,14 +292,33 @@ export default function ProcessPage() {
                           </TableCell>
                           <TableCell className="border px-4 py-2">{process.location || "No location provided"}</TableCell>
                           <TableCell className="border px-4 py-2 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(process as ProductionProcess)}>
-                                Edit
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDelete(process.id)}>
-                                Delete
-                              </Button>
-                            </div>
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  Actions
+                                </Button>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-40 p-2 flex flex-col gap-2 shadow-lg border rounded-md">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleEdit(process)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                  <span>Edit</span>
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-red-600 border-red-600 hover:bg-red-50"
+                                  onClick={() => handleDelete(process.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  <span>Delete</span>
+                                </Button>
+                              </HoverCardContent>
+                            </HoverCard>
                           </TableCell>
                         </TableRow>
                       ))}

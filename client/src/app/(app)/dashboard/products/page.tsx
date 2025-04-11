@@ -32,7 +32,7 @@ export default function ProductPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(4);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -208,9 +208,7 @@ export default function ProductPage() {
                         <FormControl>
                           <Input placeholder="Enter image URL" {...field} className="w-full" />
                         </FormControl>
-                        <FormDescription>
-                          {"Provide the image URL of the product. Example: ipfs://QmZSLSNpbEBCLp9DhW8J7bv6Jz9tm8U9LKyB2Jmv1KwHSA"}
-                        </FormDescription>
+                        <FormDescription>{"Provide the image URL of the product. Example: ipfs://QmZSLSNpbEBCLp9DhW8JB2Jmv1KwHSA"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

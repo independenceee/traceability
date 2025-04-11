@@ -6,6 +6,11 @@ import { useSearchParams } from "next/navigation";
 export default function Layout({ children }: Readonly<PropsWithChildren>) {
   const searchParams = useSearchParams();
   const template = searchParams.get("template");
+  const product = searchParams.get("product");
 
-  return <MintOneProvider metadataTemplateId={template}>{children}</MintOneProvider>;
+  return (
+    <MintOneProvider metadataTemplateId={template} productId={product}>
+      {children}
+    </MintOneProvider>
+  );
 }

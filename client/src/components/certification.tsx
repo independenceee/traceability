@@ -13,11 +13,11 @@ export default function Certification({ data, onEdit, onDelete }: { data: Certif
   return (
     <div className="rounded-lg shadow-none transition-shadow duration-300 hover:shadow-md hover:shadow-slate-800">
       <Card className="h-full pb-1 relative">
-        <Link href={`/dashboard/products/${id}`}>
+        <div>
           <AspectRatio ratio={4 / 3} className="bg-muted">
             <FileDisplay src={certHash || ""} alt={"image"} type="image/png" className="h-full w-full rounded-t-lg object-cover" />
           </AspectRatio>
-        </Link>
+        </div>
         <div className="flex flex-col items-center justify-start gap-1 self-stretch px-4 py-1">
           <div className="font-semibold self-stretch text-center text-base text-ellipsis overflow-hidden whitespace-nowrap">{certName}</div>
           <div className="font-medium self-stretch text-center text-sm text-secondary text-ellipsis overflow-hidden whitespace-nowrap">

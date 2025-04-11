@@ -137,3 +137,40 @@ export async function updateProduct({
     return { result: false, message: parseError(e) };
   }
 }
+
+export async function getProductById({ productId }: { productId: string }) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const product = await prisma.product.findFirst({
+      where: {
+        id: productId,
+        userId,
+      },
+      include: {
+        Certification: true,
+        Document: true,
+        WarehouseStorage: {
+          include: {
+            warehouse: true,
+          },
+        },
+        Feedback: true,
+        ProductionProcess: true,
+      },
+    });
+
+    if (!product) {
+      return { result: false, message: "Product not found", data: null };
+    }
+
+    return { result: true, message: "Get product successful", data: product };
+  } catch (e) {
+    return { result: false, message: parseError(e), data: null };
+  }
+}

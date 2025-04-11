@@ -35,7 +35,7 @@ export async function createWarehouseStorage({
   }
 }
 
-export async function getAllWarehouseStorage({ warehouseId }: { warehouseId: string }) {
+export async function getAllWarehouseStorage({ productId }: { productId: string }) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -45,7 +45,7 @@ export async function getAllWarehouseStorage({ warehouseId }: { warehouseId: str
     }
 
     const warehouseStorageRecords = await prisma.warehouseStorage.findMany({
-      where: { warehouseId },
+      where: { productId },
       orderBy: { createdAt: "desc" },
       include: {
         product: true,
