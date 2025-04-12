@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Images } from "@/components/images";
 import Link from "next/link";
-import { routes } from "@/constants/routes";
 export default function UtilitiesPage() {
   return (
     <div className="py-8 px-10 m-auto flex flex-col max-md:px-0">

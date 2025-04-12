@@ -54,4 +54,8 @@ export const routes = {
   warehouse: {
     redirect: "/dashboard/warehouse",
   },
+
+  download: {
+    redirect: "/download",
+  },
 };

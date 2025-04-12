@@ -1,9 +1,4 @@
 import { QRCodeCanvas } from "qrcode.react";
-import Title from "./title";
-import Link from "next/link";
-import { appImage } from "@/public/images";
-import Image from "next/image";
-import { Button } from "./ui/button";
 
 export default function QRCodeGenerator({
   code,
@@ -17,7 +12,6 @@ export default function QRCodeGenerator({
   description?: string;
 }) {
   return (
-    
     <section className="px-0 mt-[100px]">
       <aside className="mx-auto my-0 flex w-full max-w-[1200px] flex-col gap-2">
         <div className="flex w-full gap-7 max-sm:flex-col">
@@ -35,12 +29,10 @@ export default function QRCodeGenerator({
           <div className="z-10 flex w-[40%] flex-col items-start gap-[15px] max-md:gap-3 max-sm:w-full">
             <h2 className="text-left text-[25px]  font-bold max-md:text-xl">{title}</h2>
             <p className="mb-1 text-[20px] font-normal max-md:text-lg">{slogan}</p>
-            <span className={"text-left leading-[1.8] max-md:text-base"}>
-              {description}
-            </span>
-            <Link href="https://cips.cardano.org/cip/CIP-68" target="_blank">
-                <Button className={"w-full px-8 py-6"}>Learn More Traceability</Button>
-              </Link>
+            <span className={"text-left leading-[1.8] max-md:text-base"}>{description}</span>
+            {/* <Link href="https://cips.cardano.org/cip/CIP-68" target="_blank">
+              <Button className={"w-full px-8 py-6"}>Learn More Traceability</Button>
+            </Link> */}
           </div>
         </div>
       </aside>

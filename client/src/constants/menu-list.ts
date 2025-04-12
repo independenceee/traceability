@@ -28,8 +28,8 @@ export const landingMenu: NavItem[] = [
     disabled: false,
   },
   {
-    title: "Documentation",
-    href: routes.utilities.redirect,
+    title: "Download",
+    href: routes.download.redirect,
     icon: "bookText",
     disabled: true,
   },

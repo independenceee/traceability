@@ -32,7 +32,7 @@ export default function SubscriptionPage() {
       </div>
     );
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mostExpensiveService = servicesData.data.reduce((prev: any, current: any) => {
     return current.service.price > prev.service.price ? current : prev;
   });
@@ -59,6 +59,7 @@ export default function SubscriptionPage() {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {servicesData.data.map((subscription: any) => (
                       <tr key={subscription.id}>
                         <td className="border px-4 py-2">{subscription.service.name}</td>
