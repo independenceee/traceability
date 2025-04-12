@@ -170,9 +170,9 @@ model Payment {
   id             String       @id @default(cuid())
   userId         String       @map("user_id")
   subscriptionId String       @map("subscription_id")
-  amount         Float // Số ADA thanh toán
-  currency       String       @default("ADA") // Loại tiền
-  txHash         String       @unique @map("tx_hash") // Hash giao dịch Cardano
+  amount         Float 
+  currency       String       @default("ADA") 
+  txHash         String       @unique @map("tx_hash") 
   paymentDate    DateTime     @map("payment_date")
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")

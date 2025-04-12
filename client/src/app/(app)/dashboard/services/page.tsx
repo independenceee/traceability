@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createService, getAllServices, deleteService, updateService } from "@/services/database/service";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -15,6 +15,13 @@ import Loading from "@/components/loading";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Service } from "@prisma/client";
+import { useWallet } from "@/hooks/use-wallet";
+import Title from "@/components/title";
+import ServiceComponent from "@/components/service";
+import { Textarea } from "@/components/ui/textarea";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Pencil, Trash2 } from "lucide-react";
+import Subscription from "@/components/subcription";
 
 const FormSchema = z.object({
   name: z.string().min(2, { message: "Service name must be at least 2 characters." }),
@@ -24,6 +31,8 @@ const FormSchema = z.object({
 });
 
 export default function ServicePage() {
+  const { address } = useWallet();
+
   const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service>(null!);
@@ -124,6 +133,19 @@ export default function ServicePage() {
     }
   };
 
+  if (address === "addr_test1qrr879mjnxd3gjqjdgjxkwzfcnvcgsve927scqk5fc3gfs2hs03pn7uhujentyhzq3ays72u4xtfrlahyjalujhxufsqdeezc0") {
+    return (
+      <div className="py-8 px-10 m-auto flex flex-col max-md:px-0">
+        <div className="rounded-xl p-6 bg-section shadow-md flex-wrap gap-3 space-y-5">
+          <Title title="Service Plan" description="The driving force behind our success" />
+          <section className="grid grid-cols-3 content-start justify-stretch gap-8 rounded-lg max-lg:grid-cols-2 max-sm:grid-cols-1">
+            {servicesData?.data?.map((service) => <Subscription key={service.id} service={service} />)}
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-8 px-10 m-auto flex flex-col max-md:px-0">
       <div className="rounded-xl p-6 bg-section shadow-md flex-wrap gap-3 space-y-5">
@@ -141,6 +163,8 @@ export default function ServicePage() {
                         <FormControl>
                           <Input placeholder="Enter service name" {...field} className="w-full" />
                         </FormControl>
+                        <FormDescription>{"Provide the name of the product. Example: Organic A2 Cheese"}</FormDescription>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -152,8 +176,10 @@ export default function ServicePage() {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter description (optional)" {...field} className="w-full" />
+                          <Textarea placeholder="Enter description (optional)" {...field} className="w-full" />
                         </FormControl>
+                        <FormDescription>{"Provide the name of the product. Example: Organic A2 Cheese"}</FormDescription>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -165,8 +191,17 @@ export default function ServicePage() {
                       <FormItem>
                         <FormLabel>Price</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Enter price" {...field} className="w-full" />
+                          <Input
+                            type="number"
+                            placeholder="Enter duration"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className="w-full"
+                          />
                         </FormControl>
+                        <FormDescription>{"Provide the name of the product. Example: Organic A2 Cheese"}</FormDescription>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -178,8 +213,16 @@ export default function ServicePage() {
                       <FormItem>
                         <FormLabel>Duration (minutes)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Enter duration" {...field} className="w-full" />
+                          <Input
+                            type="number"
+                            placeholder="Enter duration"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className="w-full"
+                          />
                         </FormControl>
+                        <FormDescription>{"Provide the duration in minutes. Example: 60"}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -214,7 +257,9 @@ export default function ServicePage() {
               <CardTitle className="text-2xl font-semibold">Service List</CardTitle>
               <div className="h-[60vh] w-full overflow-y-auto">
                 {isLoading ? (
-                  <Loading />
+                  <div className="flex items-center justify-center h-full w-full">
+                    <Loading />
+                  </div>
                 ) : isError ? (
                   <p className="text-center text-red-500">Error loading services.</p>
                 ) : servicesData?.data?.length === 0 ? (
@@ -236,16 +281,35 @@ export default function ServicePage() {
                           <TableCell className="border px-4 py-2">{service.name}</TableCell>
                           <TableCell className="border px-4 py-2">{service.description || "N/A"}</TableCell>
                           <TableCell className="border px-4 py-2">{service.price}</TableCell>
-                          <TableCell className="border px-4 py-2">{service.duration} minutes</TableCell>
+                          <TableCell className="border px-4 py-2">{service.duration}</TableCell>
                           <TableCell className="border px-4 py-2 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(service)}>
-                                Edit
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDelete(service.id)}>
-                                Delete
-                              </Button>
-                            </div>
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  Actions
+                                </Button>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-40 p-2 flex flex-col gap-2 shadow-lg border rounded-md">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleEdit(service)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                  <span>Edit</span>
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="flex items-center gap-1 text-red-600 border-red-600 hover:bg-red-50"
+                                  onClick={() => handleDelete(service.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  <span>Delete</span>
+                                </Button>
+                              </HoverCardContent>
+                            </HoverCard>
                           </TableCell>
                         </TableRow>
                       ))}

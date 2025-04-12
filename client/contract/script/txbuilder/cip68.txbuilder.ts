@@ -8,6 +8,22 @@ import { isEmpty, isNil, isNull } from "lodash";
 import { getPkHash } from "@/utils";
 
 export class Cip68Contract extends MeshAdapter implements ICip68Contract {
+  payment = async ({ amount }: { amount: string }) => {
+    const { walletAddress, collateral, utxos } = await this.getWalletForTx();
+    const unsignedTx = this.meshTxBuilder
+      .txOut(APP_WALLET_ADDRESS, [
+        {
+          unit: "lovelace",
+          quantity: amount,
+        },
+      ])
+      .changeAddress(walletAddress)
+      .requiredSignerHash(deserializeAddress(walletAddress).pubKeyHash)
+      .selectUtxosFrom(utxos)
+      .txInCollateral(collateral.input.txHash, collateral.input.outputIndex, collateral.output.amount, collateral.output.address)
+      .setNetwork(appNetwork);
+    return await unsignedTx.complete();
+  };
   /**
    * @method Mint
    * @description Mint Asset (NFT/Token) with CIP68

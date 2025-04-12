@@ -1,18 +1,26 @@
 import { Service } from "@prisma/client";
 import { Button } from "./ui/button";
-import { createPayment } from "@/services/database/payment"; // Import hàm createPayment
+import { createSubscriptionWithPayment } from "@/services/database/payment"; // Import hàm createPayment
 import { toast } from "@/hooks/use-toast"; // Import toast để hiển thị thông báo
 import { useWallet } from "@/hooks/use-wallet";
+import { decialPlace } from "@/constants";
+import { payment } from "@/services/contract/payment";
 
 export default function Subscription({ service }: { service: Service }) {
+  const { browserWallet, address } = useWallet();
   const handlePayment = async () => {
     try {
-        const {browserWallet} = useWallet()
-      await browserWallet?.
-      const response = await createPayment({
-        subscriptionId: "subscription-id-123", // Thay bằng ID subscription thực tế
+      const createPaymentUnsignedTx = await payment({
+        address: address as string,
+        amount: String(service.price * decialPlace),
+      });
+
+      const signedTx = await browserWallet?.signTx(createPaymentUnsignedTx.data as string, true);
+      const txHash = await browserWallet?.submitTx(signedTx as string);
+      const response = await createSubscriptionWithPayment({
+        servicePlanId: service.id,
         amount: service.price,
-        txHash: "tx-hash-456", // Thay bằng hash giao dịch thực tế
+        txHash: txHash as string,
       });
 
       if (response.result) {
@@ -24,10 +32,10 @@ export default function Subscription({ service }: { service: Service }) {
       } else {
         throw new Error(response.message);
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to process payment.",
+        description: "Failed to process payment.",
         variant: "destructive",
       });
     }
@@ -110,7 +118,7 @@ export default function Subscription({ service }: { service: Service }) {
       </ul>
       <Button
         onClick={handlePayment}
-        className="text-white focus:ring-4 focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:focus:ring-purple-900"
+        className="text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:focus:ring-purple-900"
       >
         Get started
       </Button>
