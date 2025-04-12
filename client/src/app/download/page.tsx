@@ -17,7 +17,11 @@ export default function DownloadPage() {
       {/* banner-begin */}
       <section className="px-0 pt-[150px] max-md:pt-[150px] max-md:px-3">
         <aside className="mx-auto my-0 w-full h-full max-w-[1200px] flex items-center justify-center">
-          <QRCodeGenerator code={"In the heart of a bustling city, where skyscrapers cast long shadows over vibrant streets, life unfolds in a symphony of contrasts. The morning sun filters through glass towers, painting the sidewalks with golden hues, while the hum of traffic blends with the chatter of pedestrians weaving through their daily routines. Street vendors call out, offering steaming cups of coffee and warm pastries, their voices mingling with the distant wail of sirens and the rhythmic tapping of footsteps. Amid this urban tapestry, moments of quiet connection emerge—a stranger shares a smile, a musician strums a soulful tune on a worn guitar, and friends laugh over stories in a cozy café. The city breathes with possibility, its energy both chaotic and comforting, reminding us that within the rush of modernity, there’s always space for human warmth and shared dreams."} />
+          <QRCodeGenerator
+            code={
+              "lakshtoihadbgkljasdfaskjhfdhaskjlavhndkyfnoaiwyireiorva385q8w45n089wnvnaw3856a098nn64598ya98nweyawyna5894yhnhitaiwy598ayvfuhaubaytuabnt87bna9084a0buynt89yaw458ya8ey"
+            }
+          />
         </aside>
       </section>
       {/* banner-end */}
