@@ -1,6 +1,6 @@
 import { Service } from "@prisma/client";
 import { Button } from "./ui/button";
-import { createSubscriptionWithPayment } from "@/services/database/payment"; // Import hàm createPayment
+import { createOrRenewSubscriptionWithPayment } from "@/services/database/payment"; // Import hàm createPayment
 import { toast } from "@/hooks/use-toast"; // Import toast để hiển thị thông báo
 import { useWallet } from "@/hooks/use-wallet";
 import { decialPlace } from "@/constants";
@@ -17,7 +17,7 @@ export default function Subscription({ service }: { service: Service }) {
 
       const signedTx = await browserWallet?.signTx(createPaymentUnsignedTx.data as string, true);
       const txHash = await browserWallet?.submitTx(signedTx as string);
-      const response = await createSubscriptionWithPayment({
+      const response = await createOrRenewSubscriptionWithPayment({
         servicePlanId: service.id,
         amount: service.price,
         txHash: txHash as string,

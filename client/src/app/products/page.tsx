@@ -53,7 +53,6 @@ export default function ProductsPage() {
     queryKey: ["getWalletAssets", filter, currentPage],
     queryFn: () => getAssets({ query: filter.query, page: currentPage, limit: 12 }),
   });
-  console.log(data);
 
   const plugin = React.useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
   return (

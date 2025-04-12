@@ -4,53 +4,15 @@ import prisma from "@/lib/prisma";
 import { parseError } from "@/utils/error/parse-error";
 import { UnauthorizedException } from "@/utils/http/http-exceptions";
 
-export async function createPayment({ subscriptionId, amount, txHash }: { subscriptionId: string; amount: number; txHash: string }) {
-  try {
-    const session = await auth();
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      throw new UnauthorizedException();
-    }
-
-    // Kiểm tra subscription có tồn tại không
-    const subscription = await prisma.subscription.findUnique({
-      where: { id: subscriptionId },
-      include: { service: true },
-    });
-
-    if (!subscription) {
-      throw new Error("Subscription not found.");
-    }
-
-    // Tạo bản ghi thanh toán
-    const payment = await prisma.payment.create({
-      data: {
-        userId,
-        subscriptionId,
-        amount,
-        txHash,
-        paymentDate: new Date(),
-      },
-    });
-
-    // (Tùy chọn) Gia hạn subscription nếu cần
-    const newEndDate = new Date(subscription.endDate);
-    newEndDate.setMonth(newEndDate.getMonth() + subscription.service.duration);
-
-    await prisma.subscription.update({
-      where: { id: subscriptionId },
-      data: { endDate: newEndDate },
-    });
-
-    return { result: true, message: "Payment has been processed successfully!", data: payment };
-  } catch (e) {
-    console.error("Error processing payment:", e);
-    return { result: false, message: parseError(e) };
-  }
-}
-
-export async function createSubscriptionWithPayment({ servicePlanId, amount, txHash }: { servicePlanId: string; amount: number; txHash: string }) {
+export async function createOrRenewSubscriptionWithPayment({
+  servicePlanId,
+  amount,
+  txHash,
+}: {
+  servicePlanId: string;
+  amount: number;
+  txHash: string;
+}) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -68,45 +30,83 @@ export async function createSubscriptionWithPayment({ servicePlanId, amount, txH
       throw new Error("Service plan not found.");
     }
 
-    // Tính toán ngày bắt đầu và ngày kết thúc
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + service.duration);
-
-    // Thực hiện cả hai tác vụ trong một giao dịch
-    const result = await prisma.$transaction(async (prisma) => {
-      // Tạo subscription
-      const subscription = await prisma.subscription.create({
-        data: {
-          userId,
-          servicePlanId,
-          startDate,
-          endDate,
-          status: "active",
-        },
-      });
-
-      // Tạo payment liên quan đến subscription
-      const payment = await prisma.payment.create({
-        data: {
-          userId,
-          subscriptionId: subscription.id,
-          amount,
-          txHash,
-          paymentDate: new Date(),
-        },
-      });
-
-      return { subscription, payment };
+    // Tìm subscription hiện tại của người dùng
+    const existingSubscription = await prisma.subscription.findFirst({
+      where: {
+        userId,
+        servicePlanId,
+      },
     });
+
+    let result;
+
+    if (existingSubscription) {
+      // Nếu đã có subscription, gia hạn
+      const newEndDate = new Date(existingSubscription.endDate);
+      newEndDate.setMonth(newEndDate.getMonth() + service.duration);
+
+      result = await prisma.$transaction(async (prisma) => {
+        // Cập nhật subscription
+        const updatedSubscription = await prisma.subscription.update({
+          where: { id: existingSubscription.id },
+          data: {
+            endDate: newEndDate,
+          },
+        });
+
+        // Tạo payment mới
+        const payment = await prisma.payment.create({
+          data: {
+            userId,
+            subscriptionId: existingSubscription.id,
+            amount,
+            txHash,
+            paymentDate: new Date(),
+          },
+        });
+
+        return { updatedSubscription, payment };
+      });
+    } else {
+      // Nếu chưa có subscription, tạo mới
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + service.duration);
+
+      result = await prisma.$transaction(async (prisma) => {
+        // Tạo subscription mới
+        const subscription = await prisma.subscription.create({
+          data: {
+            userId,
+            servicePlanId,
+            startDate,
+            endDate,
+            status: "active",
+          },
+        });
+
+        // Tạo payment liên quan đến subscription
+        const payment = await prisma.payment.create({
+          data: {
+            userId,
+            subscriptionId: subscription.id,
+            amount,
+            txHash,
+            paymentDate: new Date(),
+          },
+        });
+
+        return { subscription, payment };
+      });
+    }
 
     return {
       result: true,
-      message: "Subscription and payment have been created successfully!",
+      message: existingSubscription ? "Subscription renewed successfully!" : "Subscription created successfully!",
       data: result,
     };
   } catch (e) {
-    console.error("Error creating subscription and payment:", e);
+    console.error("Error creating or renewing subscription:", e);
     return { result: false, message: parseError(e) };
   }
 }

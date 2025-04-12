@@ -24,6 +24,7 @@ import { useParams } from "next/navigation";
 import Loading from "@/app/(loading)/loading";
 import ProductHistory from "@/app/(app)/dashboard/(profile)/_components/product-history";
 import Footer from "@/app/(landing)/_layout/footer";
+import QRCodeGenerator from "@/components/qrcode-generator";
 
 export default function ProductsPage() {
   const params = useParams();
@@ -156,6 +157,10 @@ export default function ProductsPage() {
                   />
                 </TabsContent>
               </Tabs>
+
+              <div className="flex flex-col md:flex-row gap-6 w-full">
+                <QRCodeGenerator code={policy_id + asset_name} />
+              </div>
             </div>
           </div>
         </aside>
