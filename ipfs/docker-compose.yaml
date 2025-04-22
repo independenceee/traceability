@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  ipfs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ipfs-node
+    ports:
+      - "4001:4001"  
+      - "5001:5001"  
+      - "8080:8080"  
+    volumes:
+      - ./data:/app  
+    environment:
+      - IPFS_SWARM_KEY=/key/swarm/psk/1.0.0/
+    restart: unless-stopped
