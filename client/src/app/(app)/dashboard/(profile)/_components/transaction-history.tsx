@@ -1,4 +1,3 @@
-import Pagination from "@/components/pagination";
 import { Card, CardContent } from "@/components/ui/card";
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { appNetwork, decialPlace } from "@/constants";
@@ -9,9 +8,9 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { getHistoryMetadata } from "@/services/blockchain/getHistoryMetadata";
+import ReactDiffViewer from "react-diff-viewer";
 import { Button } from "@/components/ui/button";
-import "react-vertical-timeline-component/style.min.css";
-import Timeline from "@/components/timeline";
+import Pagination from "@/components/pagination";
 
 export default function TransactionHistory() {
   const { assetTxHistory, unit, txCurrentPage, txTotalPages, setTxCurrentPage } = useUnitContext();
@@ -57,7 +56,12 @@ export default function TransactionHistory() {
         </DialogHeader>
         <DialogContent className=" max-w-[80vw] w-screen h-[80vh] p-0">
           <div className="rounded-xl p-10">
-            <Timeline data={[dialog.oldMetadata, dialog.newMetadata]} />
+            <ReactDiffViewer
+              oldValue={JSON.stringify(dialog.oldMetadata, null, 2)}
+              newValue={JSON.stringify(dialog.newMetadata, null, 2)}
+              splitView
+              useDarkTheme
+            />
           </div>
         </DialogContent>
       </Dialog>
