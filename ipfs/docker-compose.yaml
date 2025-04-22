@@ -1,15 +1,14 @@
 services:
   ipfs:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ipfs/go-ipfs:latest
     container_name: ipfs-node
     ports:
-      - "4001:4001"  # Swarm port
-      - "5001:5001"  # API port
-      - "8080:8080"  # Gateway port
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
     volumes:
-      - ./data:/app  # Mount directory for file uploads
-    environment:
-      - IPFS_SWARM_KEY=/key/swarm/psk/1.0.0/
+      - ipfs-data:/data/ipfs
     restart: unless-stopped
+
+volumes:
+  ipfs-data:
