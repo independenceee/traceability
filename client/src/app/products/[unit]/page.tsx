@@ -22,9 +22,9 @@ import useUnitStore from "@/contexts/unit/store";
 import { AssetDetailsWithTransactionHistory, TxHistory } from "@/types";
 import { useParams } from "next/navigation";
 import Loading from "@/app/(loading)/loading";
-import ProductHistory from "@/app/(app)/dashboard/(profile)/_components/product-history";
 import Footer from "@/app/(landing)/_layout/footer";
 import QRCodeGenerator from "@/components/qrcode-generator";
+import TransactionHistory from "@/app/(app)/dashboard/(profile)/_components/product-history";
 
 export default function ProductsPage() {
   const params = useParams();
@@ -148,7 +148,14 @@ export default function ProductsPage() {
                   </Card>
                 </TabsContent>
                 <TabsContent value="transaction" className="mt-4">
-                  <ProductHistory
+                  {/* <ProductHistory
+                    assetTxHistory={assetTxHistory?.data as TxHistory[]}
+                    unit={unit}
+                    setTxCurrentPage={setTxCurrentPage}
+                    txTotalPages={txTotalPages}
+                    txCurrentPage={txCurrentPage}
+                  /> */}
+                  <TransactionHistory
                     assetTxHistory={assetTxHistory?.data as TxHistory[]}
                     unit={unit}
                     setTxCurrentPage={setTxCurrentPage}
