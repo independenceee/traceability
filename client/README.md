@@ -202,3 +202,70 @@ We welcome contributions from the community! To contribute:
 
 ## License
 MIT. See [LICENSE](LICENSE) for details.
+
+## Example .env File
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/traceability
+BLOCKFROST_API_KEY=your_blockfrost_key
+KOIOS_TOKEN=your_koios_token
+NEXT_PUBLIC_APP_NETWORK=preprod
+NEXT_PUBLIC_APP_URL_MAINNET=https://your-mainnet-url
+NEXT_PUBLIC_APP_URL_PREVIEW=https://your-preview-url
+IPFS_ENDPOINT=https://ipfs.infura.io:5001
+NEXT_PUBLIC_IPFS_GATEWAY=https://ipfs.io/
+APP_PORT=3000
+```
+
+## Database Schema Overview
+- See `prisma/schema.prisma` for full details. Key models:
+  - **User**: Registered users, wallet addresses
+  - **Service**: Service plans (name, price, duration)
+  - **Subscription**: User subscriptions (start/end date, status)
+  - **Payment**: Payment records (amount, txHash, date)
+  - **Collection/Product/Asset**: Supply chain asset management
+- All relations are enforced at the database level for integrity.
+
+## API Endpoint Examples
+- **Get Current Subscription**
+  - `GET /api/subscription/current`
+  - Returns: `{ status: 'active', endDate: '2025-12-31', service: {...} }`
+- **Create Payment**
+  - `POST /api/payment`
+  - Body: `{ servicePlanId, amount, txHash }`
+  - Returns: `{ result: true, message: 'Subscription created successfully!' }`
+- **List Services**
+  - `GET /api/services`
+  - Returns: `[ { id, name, price, duration }, ... ]`
+
+## UI/UX Philosophy
+- **Responsive**: Works on desktop, tablet, and mobile
+- **Accessible**: Uses semantic HTML, keyboard navigation, and ARIA where possible
+- **Consistent**: All UI components use Tailwind CSS and shadcn/ui for a unified look
+- **Feedback**: All actions (payment, subscription, errors) provide clear user feedback via toast notifications
+- **Guided Flows**: Payment and subscription flows are step-by-step and user-friendly
+
+## Security & Best Practices
+- **Authentication**: All sensitive routes require authentication (NextAuth.js)
+- **Authorization**: Access control enforced both in UI and backend
+- **Blockchain Payments**: All payments are verified on-chain before updating subscriptions
+- **Environment Variables**: Sensitive keys are never committed to source control
+- **Input Validation**: All forms and API endpoints validate input using Zod and server-side checks
+
+## Extensibility
+- **Add New Service Plans**: Add to the Service model and expose via the admin UI
+- **Integrate More Payment Methods**: Extend payment logic in `src/services/database/payment/`
+- **Add More Utilities**: Create new pages/components in `src/app/(utilities)` and `src/components/`
+- **Mobile App**: The platform is designed to work with a companion mobile app (distributed via APK/App Store/Google Play)
+
+## Real-World Use Cases
+- **Supply Chain Transparency**: Track products, certifications, and processes on-chain
+- **Subscription SaaS**: Offer tiered services with blockchain-based payment and access control
+- **Asset Management**: Mint, manage, and transfer digital assets with full audit trail
+- **Mobile Integration**: Seamless onboarding from web to mobile via QR code and direct download
+
+## Further Reading & Resources
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma ORM](https://www.prisma.io/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Cardano Mesh SDK](https://meshjs.dev/)
+- [shadcn/ui](https://ui.shadcn.com/)
