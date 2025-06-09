@@ -1,0 +1,12 @@
+{
+  "name": "traceability",
+  "version": "1.0.0",
+  "description": "Multi-platform traceability project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
