@@ -1,19 +1,56 @@
-Kính thưa quý thầy cô trong hội đồng, Kính thưa quý thầy cô và các bạn sinh viên đang tham dự buổi bảo vệ, Em tên là Nguyễn Duy Khánh, sinh viên lớp Công Nghệ Thông Tin 2 – K62, Trường Đại học Giao Thông Vận Tải. Hôm nay, em xin phép được trình bày đồ án tốt nghiệp với đề tài: “Xây dựng website ứng dụng công nghệ Blockchain vào quản lý chuỗi cung ứng – truy xuất nguồn gốc hàng hoá”. Đề tài hướng tới việc ứng dụng công nghệ Blockchain để tăng cường tính minh bạch, bảo mật và khả năng truy xuất nguồn gốc trong chuỗi cung ứng hàng hoá – góp phần nâng cao niềm tin của người tiêu dùng và hiệu quả quản lý của doanh nghiệp. Rất mong nhận được sự lắng nghe, góp ý và nhận xét quý báu từ quý thầy cô và các bạn để em có thể hoàn thiện hơn đề tài của mình. Em xin chân thành cảm ơn!
+### MỞ ĐẦU
+
+Kính thưa quý thầy cô trong hội đồng, Kính thưa quý thầy cô và các bạn sinh viên đang tham dự buổi bảo vệ, Em tên là Nguyễn Duy Khánh, sinh viên lớp Công Nghệ Thông Tin 2 – K62, Trường Đại học Giao Thông Vận Tải. 
+
+Hôm nay, em xin phép được trình bày đồ án tốt nghiệp với đề tài: “Xây dựng website ứng dụng công nghệ Blockchain vào quản lý chuỗi cung ứng – truy xuất nguồn gốc hàng hoá”. 
+
+Đề tài hướng tới việc ứng dụng công nghệ Blockchain để tăng cường tính minh bạch, bảo mật và khả năng truy xuất nguồn gốc trong chuỗi cung ứng hàng hoá – góp phần nâng cao niềm tin của người tiêu dùng và hiệu quả quản lý của doanh nghiệp. 
+
+Rất mong nhận được sự lắng nghe, góp ý và nhận xét quý báu từ quý thầy cô và các bạn để em có thể hoàn thiện hơn đề tài của mình. 
+
+Em xin chân thành cảm ơn!
 
 ### NỘI DUNG
 
-Trong bài thuyết trình này, em xin trình bày lần lượt các nội dung chính như sau: Đầu tiên là mục tiêu và lý do thực hiện đề tài, xuất phát từ thực trạng chuỗi cung ứng hiện nay còn thiếu minh bạch và dễ xảy ra gian lận. Tiếp theo là phần thực trạng và khảo sát, được thực hiện tại một doanh nghiệp thực tế nhằm tìm hiểu nhu cầu và khó khăn trong việc truy xuất nguồn gốc hàng hóa. Phần thứ ba, em sẽ giới thiệu các công nghệ được sử dụng, bao gồm Next.js, MeshJS, Aiken, chuẩn CIP-68, IPFS và PostgreSQL. Sau đó là phần thiết kế hệ thống và hợp đồng thông minh, trình bày kiến trúc Web3 và cách em xây dựng Smart Contract để quản lý thông tin sản phẩm. Tiếp đến là phần giao diện và demo, nơi em sẽ minh hoạ các chức năng chính như tạo, cập nhật và truy xuất sản phẩm. Cuối cùng là kết luận, tổng hợp những kết quả đạt được và định hướng phát triển trong tương lai.
+Trong bài thuyết trình này, em xin trình bày lần lượt các nội dung chính như sau: 
+
+Đầu tiên là mục tiêu và lý do thực hiện đề tài, xuất phát từ thực trạng chuỗi cung ứng hiện nay còn thiếu minh bạch và dễ xảy ra gian lận. 
+
+Tiếp theo là phần thực trạng và khảo sát, được thực hiện nhằm tìm hiểu nhu cầu và khó khăn trong việc truy xuất nguồn gốc hàng hóa. 
+
+Phần thứ ba, em sẽ giới thiệu các công nghệ được sử dụng, bao gồm Next.js, MeshJS, Aiken, chuẩn CIP-68, IPFS và PostgreSQL. 
+
+Sau đó là phần thiết kế hệ thống và hợp đồng thông minh, trình bày kiến trúc Web3 và cách em xây dựng Smart Contract để quản lý thông tin sản phẩm. 
+
+Tiếp đến là phần giao diện và demo, nơi em sẽ minh hoạ các chức năng chính như tạo, cập nhật và truy xuất sản phẩm. 
+
+Cuối cùng là kết luận, tổng hợp những kết quả đạt được và định hướng phát triển trong tương lai.
 
 ### ĐẶT VẤN ĐỀ
 
-Thưa quý thầy cô, trong quá trình tìm hiểu và thực hiện đề tài, em nhận thấy rằng hiện nay các hệ thống quản lý chuỗi cung ứng truyền thống đang đối mặt với nhiều vấn đề lớn. Trước hết là vấn đề thiếu minh bạch thông tin. Trong một chuỗi cung ứng có sự tham gia của nhiều bên như nhà sản xuất, đơn vị vận chuyển, kho lưu trữ và nhà phân phối. Tuy nhiên, thông tin giữa các bên thường không được chia sẻ đầy đủ, minh bạch. Việc cập nhật thông tin chủ yếu mang tính thủ công hoặc nội bộ, khiến cho toàn bộ chuỗi trở nên thiếu nhất quán và khó kiểm soát một cách tổng thể. Thứ hai là nguy cơ gian lận thông tin sản phẩm. Trong môi trường mà dữ liệu không được xác thực và không thể kiểm tra chéo, các hành vi làm giả, thay đổi nguồn gốc hoặc sửa thông tin sản phẩm hoàn toàn có thể xảy ra. Điều này không chỉ ảnh hưởng đến uy tín của doanh nghiệp mà còn làm mất lòng tin của người tiêu dùng đối với sản phẩm và thương hiệu. Và cuối cùng, dữ liệu trong chuỗi cung ứng thường bị phân tán. Mỗi bên tự lưu trữ thông tin theo hệ thống riêng, không có sự liên thông hoặc đồng bộ. Khi xảy ra vấn đề, việc truy xuất lại thông tin để kiểm tra, đối chiếu hoặc xác minh trở nên rất khó khăn, tốn thời gian và thậm chí có thể bị sai lệch. Chính từ những vấn đề đó, việc áp dụng một công nghệ giúp tăng cường minh bạch, đảm bảo an toàn dữ liệu và cho phép truy xuất rõ ràng là điều hết sức cần thiết. Đó cũng là lý do em lựa chọn công nghệ blockchain để xây dựng hệ thống trong đề tài này.
+Thưa quý thầy cô, trong quá trình tìm hiểu và thực hiện đề tài, em nhận thấy rằng hiện nay các hệ thống quản lý chuỗi cung ứng truyền thống đang đối mặt với nhiều vấn đề lớn. 
+
+Trước hết là vấn đề thiếu minh bạch thông tin. Trong một chuỗi cung ứng có sự tham gia của nhiều bên như nhà sản xuất, đơn vị vận chuyển, kho lưu trữ và nhà phân phối. 
+
+Tuy nhiên, thông tin giữa các bên thường không được chia sẻ đầy đủ, minh bạch. Việc cập nhật thông tin chủ yếu mang tính thủ công hoặc nội bộ, khiến cho toàn bộ chuỗi trở nên thiếu nhất quán và khó kiểm soát một cách tổng thể. 
+
+Thứ hai là nguy cơ gian lận thông tin sản phẩm. Trong môi trường mà dữ liệu không được xác thực và không thể kiểm tra chéo, các hành vi làm giả, thay đổi nguồn gốc hoặc sửa thông tin sản phẩm hoàn toàn có thể xảy ra. Điều này không chỉ ảnh hưởng đến uy tín của doanh nghiệp mà còn làm mất lòng tin của người tiêu dùng đối với sản phẩm và thương hiệu. 
+
+Và cuối cùng, dữ liệu trong chuỗi cung ứng thường bị phân tán. Mỗi bên tự lưu trữ thông tin theo hệ thống riêng, không có sự liên thông hoặc đồng bộ. Khi xảy ra vấn đề, việc truy xuất lại thông tin để kiểm tra, đối chiếu hoặc xác minh trở nên rất khó khăn, tốn thời gian và thậm chí có thể bị sai lệch. 
+
+Chính từ những vấn đề đó, việc áp dụng một công nghệ giúp tăng cường minh bạch, đảm bảo an toàn dữ liệu và cho phép truy xuất rõ ràng là điều hết sức cần thiết. Đó cũng là lý do em lựa chọn công nghệ blockchain để xây dựng hệ thống trong đề tài này.
 
 ### MỤC TIÊU
 
-Mục tiêu chính của đề tài là ứng dụng công nghệ blockchain vào việc xây dựng một hệ thống hỗ trợ quản lý và truy xuất nguồn gốc hàng hóa một cách minh bạch và hiệu quả. Cụ thể, em hướng đến việc phát triển một nền tảng web thân thiện, dễ sử dụng, cho phép doanh nghiệp tạo, cập nhật và quản lý thông tin sản phẩm xuyên suốt chuỗi cung ứng – từ nơi sản xuất, đóng gói, đến khi sản phẩm đến tay người tiêu dùng. Một điểm quan trọng nữa là hệ thống sẽ cho phép lưu trữ và cập nhật dữ liệu sản phẩm một cách tự động, an toàn và không thể chỉnh sửa, nhờ vào các hợp đồng thông minh và chuẩn NFT CIP-68 được triển khai trên mạng blockchain Cardano. Với hệ thống này, thông tin sẽ luôn được minh bạch, có thể truy xuất lại bất cứ lúc nào, từ bất kỳ thiết bị nào. Điều này không chỉ giúp doanh nghiệp nâng cao uy tín thương hiệu, mà còn tạo dựng được lòng tin vững chắc nơi người tiêu dùng, đặc biệt trong bối cảnh vấn nạn hàng giả, hàng kém chất lượng vẫn đang diễn ra phổ biến như hiện nay.
+Mục tiêu chính của đề tài là ứng dụng công nghệ blockchain vào việc xây dựng một hệ thống hỗ trợ quản lý và truy xuất nguồn gốc hàng hóa một cách minh bạch và hiệu quả. 
+
+Cụ thể, em hướng đến việc phát triển một nền tảng web thân thiện, dễ sử dụng, cho phép doanh nghiệp tạo, cập nhật và quản lý thông tin sản phẩm xuyên suốt chuỗi cung ứng – từ nơi sản xuất, đóng gói, đến khi sản phẩm đến tay người tiêu dùng. 
+
+Một điểm quan trọng nữa là hệ thống sẽ cho phép lưu trữ và cập nhật dữ liệu sản phẩm một cách tự động, an toàn và không thể chỉnh sửa, nhờ vào các hợp đồng thông minh và chuẩn NFT CIP-68 được triển khai trên mạng blockchain Cardano. 
+
+Với hệ thống này, thông tin sẽ luôn được minh bạch, có thể truy xuất lại bất cứ lúc nào, từ bất kỳ thiết bị nào. Điều này không chỉ giúp doanh nghiệp nâng cao uy tín thương hiệu, mà còn tạo dựng được lòng tin vững chắc nơi người tiêu dùng, đặc biệt trong bối cảnh vấn nạn hàng giả, hàng kém chất lượng vẫn đang diễn ra phổ biến như hiện nay.
 
 ### PHẠM VI ĐỀ TÀI
-
 
 Phạm vi thực hiện của đề tài tập trung vào việc xây dựng một hệ thống website tích hợp với ví phi tập trung, cho phép người dùng kết nối, xác thực và ký giao dịch trực tiếp trên nền tảng blockchain.
 
@@ -50,6 +87,20 @@ Về phần hợp đồng thông minh, em sử dụng Aiken và Plutus – hai c
 Phần kết nối blockchain được thực hiện qua MeshJS, một thư viện JavaScript mạnh mẽ hỗ trợ tạo, ký và gửi giao dịch trực tiếp từ trình duyệt đến mạng Cardano.
 
 Cuối cùng, để truy xuất dữ liệu on-chain như metadata, địa chỉ, giao dịch..., hệ thống sử dụng các API từ Blockfrost và Koios. Nhờ đó, việc kiểm tra và truy vấn thông tin từ blockchain diễn ra thuận tiện mà không cần chạy node riêng.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### THIẾT KẾ HỢP ĐỒNG THÔNG MINH
 
